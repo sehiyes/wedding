@@ -666,29 +666,13 @@ function initIntroStage() {
     });
   }
 
-  // 3) 메인 이미지 아래 예식 정보 타이핑 효과
+  // 3) 메인 이미지 아래 예식 정보 (타이핑 효과 없이 바로 표시)
   const infoEl = document.getElementById("introCeremonyInfo");
   if (infoEl) {
-    const lines = ["2027.04.18(일) 오전 11시", "로프트가든344"];
-    const sequence = [];
-    lines.forEach((line, li) => {
-      if (li > 0) sequence.push("\n");
-      Array.from(line).forEach((ch) => sequence.push(ch));
-    });
     infoEl.textContent = "";
-    let i = 0;
-    const typeNext = () => {
-      if (i >= sequence.length) return;
-      const token = sequence[i];
-      if (token === "\n") {
-        infoEl.appendChild(document.createElement("br"));
-      } else {
-        infoEl.appendChild(document.createTextNode(token));
-      }
-      i++;
-      setTimeout(typeNext, 105);
-    };
-    setTimeout(typeNext, 500);
+    infoEl.appendChild(document.createTextNode("2027.04.18(일) 오전 11시"));
+    infoEl.appendChild(document.createElement("br"));
+    infoEl.appendChild(document.createTextNode("로프트가든344"));
   }
 }
 
@@ -729,6 +713,11 @@ function initStoryTimeline() {
   const bubbleBestLine2 = document.getElementById("bubbleBestSvgText");
   const BUBBLE_BEST_LINE1 = "내 생애 최고의";
   const BUBBLE_BEST_LINE2 = "여자!\u00A0\u00A0\u00A0남자!";
+  /* 말풍선은 처음부터 opacity:0으로 숨겨져 있지만, 안에 있는 기본
+     정적 텍스트가 나중에 지워지는 타이밍에 따라 잠깐이라도 먼저
+     보였다 사라지는 깜빡임이 생기지 않도록 아예 지금 미리 비워둠 */
+  if (bubbleBestLine1) bubbleBestLine1.textContent = "";
+  if (bubbleBestLine2) bubbleBestLine2.textContent = "";
 
   const show = (el) => {
     if (el) el.classList.add("is-visible");
@@ -870,20 +859,20 @@ function initStoryTimeline() {
         child.classList.contains("reveal")
       ) {
         show(child);
-        await wait(500);
+        await wait(1800);
         continue;
       }
 
       if (child.classList.contains("story-line")) {
         show(child);
-        await wait(1700);
+        await wait(1800);
         continue;
       }
 
       if (child.classList.contains("story-panel-wrap")) {
         const tentImg = child.querySelector(".story-panel.reveal");
         show(tentImg);
-        await wait(1600);
+        await wait(1800);
 
         if (bubbleBest) {
           show(bubbleBest);
@@ -971,12 +960,14 @@ function initMusicButtonOverlapGuard() {
   );
   if (!targets.length) return;
 
+  /* 여유값(margin)을 좀 둬서, 딱 붙어 있는 정도도 겹침으로 잡음 */
+  const MARGIN = 10;
   function overlaps(a, b) {
     return !(
-      a.right < b.left ||
-      a.left > b.right ||
-      a.bottom < b.top ||
-      a.top > b.bottom
+      a.right + MARGIN < b.left ||
+      a.left - MARGIN > b.right ||
+      a.bottom + MARGIN < b.top ||
+      a.top - MARGIN > b.bottom
     );
   }
 
@@ -1000,6 +991,13 @@ function initMusicButtonOverlapGuard() {
     });
   });
   window.addEventListener("resize", update);
+
+  /* 스크롤이 멈춰 있다가 바로 탭하는 경우까지 대비해서,
+     실제 터치/클릭이 닿기 직전(capture 단계)에도 한 번 더 갱신 */
+  ["pointerdown", "touchstart", "mousedown"].forEach((evt) => {
+    document.addEventListener(evt, update, { capture: true, passive: true });
+  });
+
   update();
 }
 

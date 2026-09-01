@@ -1414,6 +1414,11 @@ input:focus-visible,
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
   z-index: 60;
   opacity: 0.9;
+  /* 버튼 박스는 사각형이라, 눈에 보이는 원 바깥의 네 모서리도
+     기본적으로는 클릭을 가로챈다. 실제로 보이는 원 모양만
+     클릭되도록 제한해서, 모서리 쪽에 다른 버튼이 겹쳐도 그쪽은
+     클릭이 통과되게 함 */
+  clip-path: circle(50% at 50% 50%);
 }
 .music-toggle svg {
   transition: transform 0.3s var(--ease);
@@ -2025,8 +2030,8 @@ input:focus-visible,
 
 .story-line {
   text-align: center;
-  font-size: 1.125rem;
-  line-height: 1.6;
+  font-size: 1.3rem;
+  line-height: 1.65;
   color: var(--ink);
   margin: 30px 0;
 }
@@ -2180,7 +2185,7 @@ input:focus-visible,
 
 @media (max-width: 359px) {
   .timeline-badge-img { width: 30%; }
-  .story-line { font-size: 1rem; }
+  .story-line { font-size: 1.15rem; }
 }
 
 /* 사진 갤러리 (같이 달리고/웃으며 등) */
@@ -2246,7 +2251,7 @@ input:focus-visible,
 
 @media (max-width: 359px) {
   .timeline-badge-img { width: 30%; }
-  .story-line { font-size: 1rem; }
+  .story-line { font-size: 1.15rem; }
 }
 
 /* ===== 우리들의 이야기 간격 ===== */
