@@ -2069,6 +2069,14 @@ input:focus-visible,
   object-fit: cover;
   display: block;
 }
+/* 사진 대신 잘라낸 말풍선 이미지가 들어가는 자리: 사진처럼 꽉 채워
+   자르지 않고, 원래 모양 그대로 보이게 함 */
+.timeline-bubble-crop {
+  border-radius: 0;
+  object-fit: contain;
+  align-self: center;
+  background: transparent;
+}
 /* 좌/우 이미지가 각각 바깥쪽에서 안으로 슬라이드하며 등장 */
 .timeline-img--l.reveal {
   transform: translateX(-36px);
@@ -2162,6 +2170,31 @@ input:focus-visible,
 .sparkle-2 { left: 53%; top: 44%; }
 .sparkle-3 { left: 49%; top: 54%; }
 .sparkle-4 { left: 56%; top: 50%; }
+
+/* 밤 공원 마지막 컷(손 마주치는 순간)에서 두 사람 머리 위로 뜨는 하트 */
+.story-heart {
+  position: absolute;
+  z-index: 4;
+  font-size: 1.5rem;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(0.4) translateY(6px);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+.story-heart.is-visible {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  animation: storyHeartFloat 1.8s ease-in-out 0.5s infinite;
+}
+.heart-left { left: 27%; top: 22%; }
+.heart-right { left: 68%; top: 27%; }
+
+@keyframes storyHeartFloat {
+  0%, 100% { transform: scale(1) translateY(0); }
+  50% { transform: scale(1.1) translateY(-5px); }
+}
 
 @keyframes storySparklePop {
   0% {

@@ -706,7 +706,6 @@ function initStoryTimeline() {
   const btn = document.getElementById("btnStoryToggle");
   if (!scroll || !btn) return;
 
-  const bubbleHello = document.getElementById("bubbleHello");
   const storyCrossfade = document.getElementById("storyCrossfade");
   const bubbleBest = document.getElementById("bubbleBest");
   const bubbleBestLine1 = document.getElementById("bubbleBestSvgLine1");
@@ -747,9 +746,7 @@ function initStoryTimeline() {
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
      뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
-     2024(마지막) 줄은 "그리고 2024년" 자막이 먼저 뜬 뒤에 시작되고,
-     끝나면 이어서 안녕!→만남 문장→밤 공원→소중한 문장→갤러리까지
-     전부 하나의 흐름으로 이어짐 */
+     2024(마지막) 줄은 훨씬 더 긴 전용 시퀀스(play2024Sequence)로 대체됨 */
   function revealTimelineRowContent(row, isLast) {
     show(row);
     setTimeout(() => {
@@ -767,11 +764,49 @@ function initStoryTimeline() {
 
   function revealTimelineRow(row, isLast) {
     if (isLast) {
-      show(document.getElementById("timeline2024Caption"));
-      setTimeout(() => revealTimelineRowContent(row, true), 1100);
+      play2024Sequence();
       return;
     }
     revealTimelineRowContent(row, false);
+  }
+
+  /* 2024 전용 시퀀스:
+     "그리고 2024년, 같은 곳에서 처음 마주쳤습니다." 자막
+     → 2024 뱃지
+     → 2024-b 사진(오른쪽, 왼쪽은 빈 공간)
+     → 왼쪽 말풍선(잘라낸 이미지)
+     → [스크롤해야 다음이 나타남] 2024-a 사진(왼쪽, 오른쪽은 빈 공간)
+     → 오른쪽 말풍선(잘라낸 이미지)
+     → 이후 원래 흐름(만남 문장 → 밤 공원 → 갤러리)으로 이어짐 */
+  async function play2024Sequence() {
+    show(document.getElementById("timeline2024Caption"));
+    await wait(1100);
+
+    show(document.getElementById("badge2024"));
+    await wait(900);
+
+    show(document.getElementById("timeline2024ImgB"));
+    await wait(1000);
+
+    show(document.getElementById("timeline2024BubbleLeft"));
+
+    const rowTwo = document.getElementById("timeline2024RowTwo");
+    revealOnScroll(rowTwo, () => play2024RowTwo(), {
+      root: null,
+      rootMargin: "0px 0px -12% 0px",
+      threshold: 0.3,
+    });
+  }
+
+  async function play2024RowTwo() {
+    show(document.getElementById("timeline2024RowTwo"));
+    show(document.getElementById("timeline2024ImgA"));
+    await wait(1000);
+
+    show(document.getElementById("timeline2024BubbleRight"));
+    await wait(1200);
+
+    continueAfterLastRow();
   }
 
   /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
@@ -788,7 +823,8 @@ function initStoryTimeline() {
   }
 
   /* 밤 공원 4컷: 시작되면 스크롤과 상관없이 시간에 따라
-     1 → 2 → 3 → 4로 넘어감. 다 끝나야 다음 문장이 나타남 */
+     1 → 2 → 3 → 4로 넘어감. 마지막 컷(손 마주치는 순간)에서는
+     두 사람 머리 위로 하트가 뜸. 다 끝나야 다음 문장이 나타남 */
   async function playNightSequence() {
     if (!storyCrossfade) return;
     const frames = Array.from(
@@ -797,6 +833,8 @@ function initStoryTimeline() {
     const sparkleEls = Array.from(
       storyCrossfade.querySelectorAll(".story-sparkle")
     );
+    const heartLeft = storyCrossfade.querySelector(".heart-left");
+    const heartRight = storyCrossfade.querySelector(".heart-right");
 
     const preciousLine = document.getElementById("storyPreciousLine");
 
@@ -817,6 +855,12 @@ function initStoryTimeline() {
       const sparkle = sparkleEls[i - 1];
       if (sparkle) {
         requestAnimationFrame(() => sparkle.classList.add("is-visible"));
+      }
+      if (i === 3) {
+        requestAnimationFrame(() => {
+          show(heartLeft);
+          show(heartRight);
+        });
       }
       await wait(i === 3 ? 1700 : 1200);
       frames[i - 1].classList.remove("is-active");
@@ -896,18 +940,14 @@ function initStoryTimeline() {
     }
   }
 
-  /* 2024 줄 사진이 다 뜬 뒤부터는 스크롤과 상관없이
-     하나의 흐름으로 끝까지 이어짐:
-     안녕! → 만남 문장 → 밤 공원 4컷 → 소중한 문장 → 갤러리(사진/문장/
+  /* 2024 시퀀스(캡션→뱃지→b사진→왼쪽말풍선→a사진→오른쪽말풍선)가
+     다 끝난 뒤부터는 스크롤과 상관없이 하나의 흐름으로 끝까지 이어짐:
+     만남 문장 → 밤 공원 4컷 → 소중한 문장 → 갤러리(사진/문장/
      텐트/말풍선) → 마지막 문장 */
   async function continueAfterLastRow() {
-    await wait(1000);
-    show(bubbleHello);
-
-    await wait(1200);
     show(document.getElementById("storyMeetLine"));
 
-    /* "운동하는 곳에서..." 문장을 다 읽을 시간을 준 뒤에 밤 공원 시작 */
+    /* "다행이도(?)..." 문장을 다 읽을 시간을 준 뒤에 밤 공원 시작 */
     await wait(1500);
     await playNightSequence();
 
@@ -919,7 +959,11 @@ function initStoryTimeline() {
   }
 
   function setupScrollReveal() {
-    const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
+    /* timeline2024RowTwo(2024-a + 오른쪽 말풍선)는 play2024Sequence 안에서
+       별도로 스크롤 트리거하므로, 여기 일반 행 목록에서는 제외 */
+    const rows = scroll.querySelectorAll(
+      ".story-timeline .timeline-row:not(#timeline2024RowTwo)"
+    );
     rows.forEach((row, idx) =>
       revealOnScroll(row, () => queueTimelineRow(row, idx === rows.length - 1), {
         root: null,
