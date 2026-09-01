@@ -723,20 +723,40 @@ function initStoryTimeline() {
 
   const bubbleHello = document.getElementById("bubbleHello");
   const storyCrossfade = document.getElementById("storyCrossfade");
+  const bubbleBest = document.getElementById("bubbleBest");
+  const bubbleBestText = bubbleBest
+    ? bubbleBest.querySelector(".bubble-best-text")
+    : null;
+  const campingPhoto = document.querySelector("#campingWrap .story-panel");
+
+  /* "여자!   남자!" 글자를 한 글자씩 타이핑하듯 보여줌 */
+  function typeBubbleBestText() {
+    if (!bubbleBestText) return;
+    const full = "여자!\u00A0\u00A0\u00A0남자!";
+    bubbleBestText.textContent = "";
+    let i = 0;
+    const timer = setInterval(() => {
+      i += 1;
+      bubbleBestText.textContent = full.slice(0, i);
+      if (i >= full.length) clearInterval(timer);
+    }, 90);
+  }
 
   const show = (el) => {
     if (el) el.classList.add("is-visible");
   };
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
-     뱃지가 먼저, 살짝 뒤에 좌/우 사진이 나타남 */
+     뱃지가 조금 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남 */
   function revealTimelineRow(row) {
     show(row);
-    show(row.querySelector(".timeline-badge-img"));
+    setTimeout(() => {
+      show(row.querySelector(".timeline-badge-img"));
+    }, 300);
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
-    }, 220);
+    }, 650);
   }
 
   /* storyCrossfade(밤 공원 4컷)는 이 구간이 화면을 지나가는
@@ -759,8 +779,10 @@ function initStoryTimeline() {
       const vh = window.innerHeight || document.documentElement.clientHeight;
 
       /* 이 구간이 화면 맨 아래에서 맨 위까지 지나가는 전체 거리 대비
-         지금까지 스크롤해서 지나온 비율(0~1) */
-      const total = rect.height + vh;
+         지금까지 스크롤해서 지나온 비율(0~1)
+         - 절반 정도만 스크롤해도 4컷이 다 넘어가도록 거리를 짧게 잡아
+           전환이 더 빠르게 느껴지도록 함 */
+      const total = (rect.height + vh) * 0.55;
       const traveled = vh - rect.top;
       const progress = Math.min(1, Math.max(0, traveled / total));
 
@@ -796,7 +818,7 @@ function initStoryTimeline() {
     /* 스크롤 위치로 개별 등장시킬 요소들: 문장 한 줄, 갤러리 사진,
        "베스트!" 말풍선 등 (타임라인 줄/크로스페이드는 별도 처리) */
     const plainTargets = scroll.querySelectorAll(
-      ".story-scroll > .story-line, .story-gallery .story-panel, .story-gallery .story-line, #bubbleBest"
+      ".story-scroll > .story-line, .story-gallery .story-panel, .story-gallery .story-line"
     );
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
 
@@ -852,12 +874,32 @@ function initStoryTimeline() {
         );
         crossfadeObserver.observe(storyCrossfade);
       }
+
+      /* 텐트 사진이 화면 중간쯤 올라오면 말풍선이 뜨고 타이핑 시작 */
+      if (bubbleBest && campingPhoto) {
+        const bestObserver = new IntersectionObserver(
+          (entries, obs) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              obs.unobserve(entry.target);
+              show(bubbleBest);
+              setTimeout(typeBubbleBestText, 350);
+            });
+          },
+          { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 }
+        );
+        bestObserver.observe(campingPhoto);
+      }
     } else {
       /* IntersectionObserver 미지원 브라우저: 그냥 다 보이게 */
       rows.forEach(revealTimelineRow);
       plainTargets.forEach(show);
       if (bubbleHello) show(bubbleHello);
       if (storyCrossfade) show(storyCrossfade);
+      if (bubbleBest) {
+        show(bubbleBest);
+        typeBubbleBestText();
+      }
     }
 
     watchCrossfadeScroll();

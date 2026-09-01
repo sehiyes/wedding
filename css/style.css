@@ -2171,15 +2171,9 @@ input:focus-visible,
   margin-top: 34px;
 }
 
-/* "여자! 남자!" 글자 2배 */
-.bubble-best-text {
-  font-size: 1rem;
-}
-
 @media (max-width: 359px) {
   .timeline-badge-img { width: 30%; }
   .story-line { font-size: 1rem; }
-  .bubble-best-text { font-size: 0.84rem; }
 }
 
 /* 사진 갤러리 (같이 달리고/웃으며 등) */
@@ -2227,7 +2221,7 @@ input:focus-visible,
   transform: translate(-50%, -50%);
   font-family: var(--font-accent);
   font-weight: 700;
-  font-size: 0.5rem;
+  font-size: 1.35rem;
   line-height: 1;
   color: var(--ink);
   text-shadow:
@@ -2239,7 +2233,7 @@ input:focus-visible,
 @media (max-width: 359px) {
   .timeline-badge-img { width: 30%; }
   .story-line { font-size: 1rem; }
-  .bubble-best-text { font-size: 0.42rem; }
+  .bubble-best-text { font-size: 1.05rem; }
 }
 
 /* ===== 우리들의 이야기 간격 ===== */
@@ -2259,8 +2253,8 @@ input:focus-visible,
   transform: none;
 }
 
-/* 순차 전환 시 첫 번째 밤공원 컷을 안정적으로 유지 */
+/* 순차 전환 시 첫 번째 밤공원 컷을 안정적으로 유지 (전환 속도를 더 빠르게) */
 #storyCrossfade .crossfade-img {
-  transition: opacity 1s ease;
+  transition: opacity 0.6s ease;
 }
 
