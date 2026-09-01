@@ -767,8 +767,21 @@ function initStoryTimeline() {
     }, 750);
   }
 
+  /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
+     한 줄씩 최소 간격을 두고 순서대로 나타나게 줄을 세움 */
+  let rowRevealQueue = Promise.resolve();
+  function queueTimelineRow(row) {
+    rowRevealQueue = rowRevealQueue.then(
+      () =>
+        new Promise((resolve) => {
+          revealTimelineRow(row);
+          setTimeout(resolve, 700);
+        })
+    );
+  }
+
   /* 밤 공원 4컷: 화면 중간쯤 들어오면 시작, 이후엔 스크롤과 상관없이
-     시간에 따라 1 → 2 → 3 → 4로 넘어감 */
+     시간에 따라 1 → 2 → 3 → 4로 넘어감. 다 끝나야 다음 문장이 나타남 */
   async function playNightSequence() {
     if (!storyCrossfade) return;
     const frames = Array.from(
@@ -777,7 +790,14 @@ function initStoryTimeline() {
     const sparkleEls = Array.from(
       storyCrossfade.querySelectorAll(".story-sparkle")
     );
-    if (frames.length < 4) return;
+
+    const preciousLine = document.getElementById("storyPreciousLine");
+
+    if (frames.length < 4) {
+      show(storyCrossfade);
+      show(preciousLine);
+      return;
+    }
 
     show(storyCrossfade);
     frames.forEach((frame, i) => frame.classList.toggle("is-active", i === 0));
@@ -794,6 +814,10 @@ function initStoryTimeline() {
       await wait(i === 3 ? 1900 : 1300);
       frames[i - 1].classList.remove("is-active");
     }
+
+    /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장 */
+    await wait(400);
+    show(preciousLine);
   }
 
   /* "여자!   남자!" 한 글자씩 타이핑 (시간 기반) */
@@ -847,15 +871,22 @@ function initStoryTimeline() {
   function setupScrollReveal() {
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
     rows.forEach((row) =>
-      revealOnScroll(row, () => revealTimelineRow(row), {
+      revealOnScroll(row, () => queueTimelineRow(row), {
         root: null,
         rootMargin: "0px 0px -12% 0px",
         threshold: 0.25,
       })
     );
 
-    const firstLine = scroll.querySelector(".story-scroll > .story-line");
-    revealOnScroll(firstLine, () => show(firstLine));
+    /* .story-scroll 바로 아래 문장들(첫 문장, 만남 문장, 마지막 문장 등)은
+       전부 각자 화면에 들어오면 나타남 — querySelectorAll로 전부 잡아야
+       텐트 사진 뒤 마지막 문장도 빠지지 않음.
+       단, "서로의 가장 소중한..." 문장(#storyPreciousLine)은 밤 공원
+       시퀀스가 다 끝난 뒤 playNightSequence 안에서만 띄우므로 제외 */
+    const topLevelLines = scroll.querySelectorAll(
+      ".story-scroll > .story-line:not(#storyPreciousLine)"
+    );
+    topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
 
     revealOnScroll(bubbleHello, () => show(bubbleHello), {
       root: null,
@@ -863,20 +894,14 @@ function initStoryTimeline() {
       threshold: 0.4,
     });
 
-    const storyMeetLine = document.getElementById("storyMeetLine");
-    revealOnScroll(storyMeetLine, () => show(storyMeetLine));
-
-    /* 밤 공원 구간이 화면 중간쯤 들어오면 시작 */
+    /* 밤 공원 구간이 화면 중간쯤 들어오면 시작.
+       다음 문장("서로의 가장 소중한 사람이...")은 이 시퀀스가
+       다 끝난 뒤 playNightSequence 안에서 직접 띄움 */
     revealOnScroll(storyCrossfade, () => playNightSequence(), {
       root: null,
       rootMargin: "-45% 0px -45% 0px",
       threshold: 0,
     });
-
-    const preciousLine = storyCrossfade
-      ? storyCrossfade.nextElementSibling
-      : null;
-    revealOnScroll(preciousLine, () => show(preciousLine));
 
     const gallery = scroll.querySelector(".story-gallery");
     revealOnScroll(gallery, () => playGalleryChain(gallery), {
