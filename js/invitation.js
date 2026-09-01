@@ -758,8 +758,8 @@ function initStoryTimeline() {
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
      뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
-     2024(마지막) 줄은 사진이 다 뜬 뒤 "안녕!" 말풍선 →
-     그 다음 만남 문장(#storyMeetLine) 순서로 이어짐 */
+     2024(마지막) 줄이 끝나면 이어서 안녕!→만남 문장→밤 공원→
+     소중한 문장→갤러리까지 전부 하나의 흐름으로 이어짐 */
   function revealTimelineRow(row, isLast) {
     show(row);
     setTimeout(() => {
@@ -770,12 +770,7 @@ function initStoryTimeline() {
       show(row.querySelector(".timeline-img--r"));
 
       if (isLast) {
-        setTimeout(() => {
-          show(bubbleHello);
-          setTimeout(() => {
-            show(document.getElementById("storyMeetLine"));
-          }, 850);
-        }, 900);
+        continueAfterLastRow();
       }
     }, 950);
   }
@@ -793,8 +788,8 @@ function initStoryTimeline() {
     );
   }
 
-  /* 밤 공원 4컷: 화면 중간쯤 들어오면 시작, 이후엔 스크롤과 상관없이
-     시간에 따라 1 → 2 → 3 → 4로 넘어감. 다 끝나야 다음 문장이 나타남 */
+  /* 밤 공원 4컷: 시작되면 스크롤과 상관없이 시간에 따라
+     1 → 2 → 3 → 4로 넘어감. 다 끝나야 다음 문장이 나타남 */
   async function playNightSequence() {
     if (!storyCrossfade) return;
     const frames = Array.from(
@@ -840,7 +835,6 @@ function initStoryTimeline() {
         resolve();
         return;
       }
-      el.textContent = "";
       let i = 0;
       const timer = setInterval(() => {
         i += 1;
@@ -853,10 +847,14 @@ function initStoryTimeline() {
     });
   }
 
-  /* 말풍선 두 줄("내 생애 최고의" → "여자!   남자!") 모두 순서대로 타이핑 */
+  /* 말풍선 두 줄("내 생애 최고의" → "여자!   남자!") 순서대로 타이핑.
+     기본 정적 텍스트가 잠깐이라도 먼저 보이지 않도록, 말풍선을
+     보여주기 직전에 두 줄 다 미리 비워둠 */
   async function typeBubbleBestAll() {
+    if (bubbleBestLine1) bubbleBestLine1.textContent = "";
+    if (bubbleBestLine2) bubbleBestLine2.textContent = "";
     await typeText(bubbleBestLine1, BUBBLE_BEST_LINE1, 100);
-    await wait(200);
+    await wait(250);
     await typeText(bubbleBestLine2, BUBBLE_BEST_LINE2, 110);
   }
 
@@ -901,6 +899,28 @@ function initStoryTimeline() {
     show(document.getElementById("storyFinalLine"));
   }
 
+  /* 2024 줄 사진이 다 뜬 뒤부터는 스크롤과 상관없이
+     하나의 흐름으로 끝까지 이어짐:
+     안녕! → 만남 문장 → 밤 공원 4컷 → 소중한 문장 → 갤러리(사진/문장/
+     텐트/말풍선) → 마지막 문장 */
+  async function continueAfterLastRow() {
+    await wait(1400);
+    show(bubbleHello);
+
+    await wait(1700);
+    show(document.getElementById("storyMeetLine"));
+
+    /* "운동하는 곳에서..." 문장을 다 읽을 시간을 준 뒤에 밤 공원 시작 */
+    await wait(2200);
+    await playNightSequence();
+
+    await wait(400);
+    const gallery = scroll.querySelector(".story-gallery");
+    if (gallery) {
+      await playGalleryChain(gallery);
+    }
+  }
+
   function setupScrollReveal() {
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
     rows.forEach((row, idx) =>
@@ -912,30 +932,16 @@ function initStoryTimeline() {
     );
 
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
-       - "서로의 가장 소중한..."(#storyPreciousLine)은 밤 공원 시퀀스 뒤
-       - "운동하는 곳에서..."(#storyMeetLine)는 2024 줄 → 안녕! 말풍선 뒤
-       - "이제는 같은 길을..."(#storyFinalLine)은 갤러리 체인의 맨 마지막
-       각각 별도 타이밍에서 직접 띄우므로 여기서는 제외 */
+       - "서로의 가장 소중한..."(#storyPreciousLine): 밤 공원 시퀀스 뒤
+       - "운동하는 곳에서..."(#storyMeetLine): 2024 줄 → 안녕! 말풍선 뒤
+       - "이제는 같은 길을..."(#storyFinalLine): 갤러리 체인의 맨 마지막
+       전부 continueAfterLastRow() 체인 안에서 순서대로 직접 띄우므로
+       여기서는 제외하고, 밤공원/갤러리도 더 이상 독립적으로 스크롤
+       트리거하지 않음 (그 앞 문장이 뜨기 전에 먼저 재생되던 문제 방지) */
     const topLevelLines = scroll.querySelectorAll(
       ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine):not(#storyFinalLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
-
-    /* 밤 공원 구간이 화면 중간쯤 들어오면 시작.
-       다음 문장("서로의 가장 소중한 사람이...")은 이 시퀀스가
-       다 끝난 뒤 playNightSequence 안에서 직접 띄움 */
-    revealOnScroll(storyCrossfade, () => playNightSequence(), {
-      root: null,
-      rootMargin: "-45% 0px -45% 0px",
-      threshold: 0,
-    });
-
-    const gallery = scroll.querySelector(".story-gallery");
-    revealOnScroll(gallery, () => playGalleryChain(gallery), {
-      root: null,
-      rootMargin: "0px 0px -12% 0px",
-      threshold: 0.1,
-    });
   }
 
   /* 패널을 여는 순간 한 번만: 펼쳐지는 애니메이션이 끝난 뒤
