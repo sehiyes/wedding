@@ -2202,12 +2202,13 @@ input:focus-visible,
 
 .story-panel-wrap {
   position: relative;
-  margin-top: 20px;
+  /* 위에 있는 자막 문장과 말풍선이 겹치지 않도록 충분한 여백 확보 */
+  margin-top: 140px;
 }
 .story-bubble-best {
   position: absolute;
   left: 50%;
-  top: -38%;
+  top: -24%;
   width: 44%;
   min-width: 132px;
   transform: translate(-50%, 0) scale(0.85);

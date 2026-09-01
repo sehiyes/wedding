@@ -768,7 +768,7 @@ function initStoryTimeline() {
   function revealTimelineRow(row, isLast) {
     if (isLast) {
       show(document.getElementById("timeline2024Caption"));
-      setTimeout(() => revealTimelineRowContent(row, true), 1400);
+      setTimeout(() => revealTimelineRowContent(row, true), 1100);
       return;
     }
     revealTimelineRowContent(row, false);
@@ -809,7 +809,7 @@ function initStoryTimeline() {
     show(storyCrossfade);
     frames.forEach((frame, i) => frame.classList.toggle("is-active", i === 0));
 
-    await wait(2100);
+    await wait(1500);
 
     for (let i = 1; i < 4; i++) {
       sparkleEls.forEach((el) => el.classList.remove("is-visible"));
@@ -818,12 +818,12 @@ function initStoryTimeline() {
       if (sparkle) {
         requestAnimationFrame(() => sparkle.classList.add("is-visible"));
       }
-      await wait(i === 3 ? 2300 : 1600);
+      await wait(i === 3 ? 1700 : 1200);
       frames[i - 1].classList.remove("is-active");
     }
 
     /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장 */
-    await wait(600);
+    await wait(400);
     show(preciousLine);
   }
 
@@ -870,26 +870,26 @@ function initStoryTimeline() {
         child.classList.contains("reveal")
       ) {
         show(child);
-        await wait(1800);
+        await wait(1300);
         continue;
       }
 
       if (child.classList.contains("story-line")) {
         show(child);
-        await wait(1800);
+        await wait(1300);
         continue;
       }
 
       if (child.classList.contains("story-panel-wrap")) {
         const tentImg = child.querySelector(".story-panel.reveal");
         show(tentImg);
-        await wait(1800);
+        await wait(1300);
 
         if (bubbleBest) {
           show(bubbleBest);
-          await wait(300);
+          await wait(250);
           await typeBubbleBestAll();
-          await wait(1100);
+          await wait(800);
         }
         continue;
       }
@@ -901,17 +901,17 @@ function initStoryTimeline() {
      안녕! → 만남 문장 → 밤 공원 4컷 → 소중한 문장 → 갤러리(사진/문장/
      텐트/말풍선) → 마지막 문장 */
   async function continueAfterLastRow() {
-    await wait(1400);
+    await wait(1000);
     show(bubbleHello);
 
-    await wait(1700);
+    await wait(1200);
     show(document.getElementById("storyMeetLine"));
 
     /* "운동하는 곳에서..." 문장을 다 읽을 시간을 준 뒤에 밤 공원 시작 */
-    await wait(2200);
+    await wait(1500);
     await playNightSequence();
 
-    await wait(400);
+    await wait(300);
     const gallery = scroll.querySelector(".story-gallery");
     if (gallery) {
       await playGalleryChain(gallery);
