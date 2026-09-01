@@ -714,7 +714,8 @@ function initShareButtons() {
 }
 
 /* ---------------------------------------------------------
-   13. 우리들의 이야기 - 스크롤한 만큼 컷이 순서대로 나타나는 연출
+   13. 우리들의 이야기 - 각 장면은 스크롤로 들어오면 시작되고,
+       장면 안에서는 정해진 시간차로 순서대로 나타남
 --------------------------------------------------------- */
 function initStoryTimeline() {
   const scroll = document.getElementById("storyScroll");
@@ -725,12 +726,33 @@ function initStoryTimeline() {
   const storyCrossfade = document.getElementById("storyCrossfade");
   const bubbleBest = document.getElementById("bubbleBest");
   const bubbleBestText = document.getElementById("bubbleBestSvgText");
-  const campingPhoto = document.querySelector("#campingWrap .story-panel");
   const BUBBLE_BEST_FULL_TEXT = "여자!\u00A0\u00A0\u00A0남자!";
 
   const show = (el) => {
     if (el) el.classList.add("is-visible");
   };
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  /* 요소가 스크롤로 화면에 들어오면 한 번만 콜백 실행
+     (IntersectionObserver 미지원 브라우저는 그냥 바로 실행) */
+  function revealOnScroll(el, onEnter, opts) {
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) {
+      onEnter();
+      return;
+    }
+    const io = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          obs.unobserve(entry.target);
+          onEnter();
+        });
+      },
+      opts || { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.2 }
+    );
+    io.observe(el);
+  }
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
      뱃지가 조금 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남 */
@@ -738,16 +760,16 @@ function initStoryTimeline() {
     show(row);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
-    }, 300);
+    }, 350);
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
-    }, 650);
+    }, 750);
   }
 
-  /* storyCrossfade(밤 공원 4컷)는 이 구간이 화면을 지나가는
-     정도(스크롤한 만큼)에 따라 1→2→3→4 순서로 전환됨 */
-  function watchCrossfadeScroll() {
+  /* 밤 공원 4컷: 화면 중간쯤 들어오면 시작, 이후엔 스크롤과 상관없이
+     시간에 따라 1 → 2 → 3 → 4로 넘어감 */
+  async function playNightSequence() {
     if (!storyCrossfade) return;
     const frames = Array.from(
       storyCrossfade.querySelectorAll(".crossfade-img")
@@ -755,231 +777,113 @@ function initStoryTimeline() {
     const sparkleEls = Array.from(
       storyCrossfade.querySelectorAll(".story-sparkle")
     );
-    if (frames.length < 2) return;
+    if (frames.length < 4) return;
 
-    let reachedFrame = 0;
-    let ticking = false;
+    show(storyCrossfade);
+    frames.forEach((frame, i) => frame.classList.toggle("is-active", i === 0));
 
-    function update() {
-      const rect = storyCrossfade.getBoundingClientRect();
-      const vh = window.innerHeight || document.documentElement.clientHeight;
+    await wait(1700);
 
-      /* 이 구간이 화면 맨 아래에서 맨 위까지 지나가는 전체 거리 대비
-         지금까지 스크롤해서 지나온 비율(0~1)
-         - 필요한 스크롤량을 살짝만 늘려 전환을 조금 더 여유있게 */
-      const total = (rect.height + vh) * 0.62;
-      const traveled = vh - rect.top;
-      const progress = Math.min(1, Math.max(0, traveled / total));
-
-      const frameIdx = Math.min(
-        frames.length - 1,
-        Math.floor(progress * frames.length)
-      );
-
-      if (frameIdx > reachedFrame) {
-        for (let i = reachedFrame + 1; i <= frameIdx; i++) {
-          sparkleEls.forEach((el) => el.classList.remove("is-visible"));
-          frames[i].classList.add("is-active");
-          frames[i - 1].classList.remove("is-active");
-          const sparkle = sparkleEls[i - 1];
-          if (sparkle) sparkle.classList.add("is-visible");
-        }
-        reachedFrame = frameIdx;
+    for (let i = 1; i < 4; i++) {
+      sparkleEls.forEach((el) => el.classList.remove("is-visible"));
+      frames[i].classList.add("is-active");
+      const sparkle = sparkleEls[i - 1];
+      if (sparkle) {
+        requestAnimationFrame(() => sparkle.classList.add("is-visible"));
       }
+      await wait(i === 3 ? 1900 : 1300);
+      frames[i - 1].classList.remove("is-active");
     }
-
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    });
-    update();
   }
 
-  /* 텐트 사진이 화면 중앙 쪽으로 올라오는 만큼(스크롤한 만큼)
-     말풍선이 나타나고, "여자!   남자!" 글자도 한 글자씩 채워짐 */
-  function watchBubbleBestScroll() {
-    if (!bubbleBest || !campingPhoto) return;
-
-    let shown = false;
-    let maxCount = 0;
-    let ticking = false;
-
-    function update() {
-      const rect = campingPhoto.getBoundingClientRect();
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-
-      /* 트리거 기준점: 화면의 55% 지점 (대략 중앙보다 살짝 아래) */
-      const triggerLine = vh * 0.55;
-      if (rect.top > triggerLine) return;
-
-      if (!shown) {
-        shown = true;
-        show(bubbleBest);
-        if (bubbleBestText) bubbleBestText.textContent = "";
-      }
-
-      /* 트리거 지점을 지나 240px 스크롤하는 동안 글자가 다 채워짐 */
-      const progress = Math.min(
-        1,
-        Math.max(0, (triggerLine - rect.top) / 240)
-      );
-      const count = Math.floor(progress * BUBBLE_BEST_FULL_TEXT.length);
-
-      if (count > maxCount) {
-        maxCount = count;
-        if (bubbleBestText) {
-          bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT.slice(
-            0,
-            maxCount
-          );
-        }
-      }
-    }
-
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    });
-    update();
+  /* "여자!   남자!" 한 글자씩 타이핑 (시간 기반) */
+  function typeBubbleBestText() {
+    if (!bubbleBestText) return;
+    bubbleBestText.textContent = "";
+    let i = 0;
+    const timer = setInterval(() => {
+      i += 1;
+      bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT.slice(0, i);
+      if (i >= BUBBLE_BEST_FULL_TEXT.length) clearInterval(timer);
+    }, 90);
   }
 
-  /* 문장 캡션들("같은 해에 태어나...", "운명적으로... 만나게 되어" 등)도
-     화면에 다가온 만큼(스크롤한 만큼) 한 글자씩 채워지며 나타남 */
-  function watchStoryLineTypewriters() {
-    const lines = Array.from(
-      scroll.querySelectorAll(".story-scroll > .story-line, .story-gallery .story-line")
-    );
-    if (!lines.length) return;
+  /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ...
+     마지막엔 자막 → 텐트 사진 → 말풍선 순서로 시간차를 두고 나타남 */
+  async function playGalleryChain(gallery) {
+    const children = Array.from(gallery.children);
 
-    const states = lines.map((el) => {
-      const full = el.textContent;
-      el.textContent = "";
-      return { el, full, shown: false, maxCount: 0 };
-    });
+    for (const child of children) {
+      if (
+        child.classList.contains("story-panel") &&
+        child.classList.contains("reveal")
+      ) {
+        show(child);
+        await wait(300);
+        continue;
+      }
 
-    let ticking = false;
+      if (child.classList.contains("story-line")) {
+        show(child);
+        await wait(1400);
+        continue;
+      }
 
-    function update() {
-      const vh = window.innerHeight || document.documentElement.clientHeight;
-      const triggerLine = vh * 0.82;
+      if (child.classList.contains("story-panel-wrap")) {
+        const tentImg = child.querySelector(".story-panel.reveal");
+        show(tentImg);
+        await wait(1300);
 
-      states.forEach((state) => {
-        if (state.maxCount >= state.full.length) return;
-
-        const rect = state.el.getBoundingClientRect();
-        if (rect.top > triggerLine) return;
-
-        if (!state.shown) {
-          state.shown = true;
-          show(state.el);
+        if (bubbleBest) {
+          show(bubbleBest);
+          typeBubbleBestText();
+          await wait(900);
         }
-
-        const progress = Math.min(
-          1,
-          Math.max(0, (triggerLine - rect.top) / 200)
-        );
-        const count = Math.ceil(progress * state.full.length);
-
-        if (count > state.maxCount) {
-          state.maxCount = count;
-          state.el.textContent = state.full.slice(0, count);
-        }
-      });
+        continue;
+      }
     }
-
-    window.addEventListener("scroll", () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        update();
-        ticking = false;
-      });
-    });
-    update();
   }
 
   function setupScrollReveal() {
-    /* 스크롤 위치로 개별 등장시킬 요소들: 갤러리 사진 등
-       (문장 캡션/타임라인 줄/크로스페이드/베스트 말풍선은 별도 처리) */
-    const plainTargets = scroll.querySelectorAll(".story-gallery .story-panel");
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
+    rows.forEach((row) =>
+      revealOnScroll(row, () => revealTimelineRow(row), {
+        root: null,
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.25,
+      })
+    );
 
-    if ("IntersectionObserver" in window) {
-      const observer = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            obs.unobserve(entry.target);
-            show(entry.target);
-          });
-        },
-        { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.2 }
-      );
-      plainTargets.forEach((el) => observer.observe(el));
+    const firstLine = scroll.querySelector(".story-scroll > .story-line");
+    revealOnScroll(firstLine, () => show(firstLine));
 
-      const rowObserver = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((entry) => {
-            if (!entry.isIntersecting) return;
-            obs.unobserve(entry.target);
-            revealTimelineRow(entry.target);
-          });
-        },
-        { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.25 }
-      );
-      rows.forEach((row) => rowObserver.observe(row));
+    revealOnScroll(bubbleHello, () => show(bubbleHello), {
+      root: null,
+      rootMargin: "0px 0px -20% 0px",
+      threshold: 0.4,
+    });
 
-      if (bubbleHello) {
-        const helloObserver = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              obs.unobserve(entry.target);
-              show(bubbleHello);
-            });
-          },
-          { root: null, rootMargin: "0px 0px -20% 0px", threshold: 0.4 }
-        );
-        helloObserver.observe(bubbleHello);
-      }
+    const storyMeetLine = document.getElementById("storyMeetLine");
+    revealOnScroll(storyMeetLine, () => show(storyMeetLine));
 
-      if (storyCrossfade) {
-        const crossfadeObserver = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              obs.unobserve(entry.target);
-              show(storyCrossfade);
-            });
-          },
-          { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.15 }
-        );
-        crossfadeObserver.observe(storyCrossfade);
-      }
+    /* 밤 공원 구간이 화면 중간쯤 들어오면 시작 */
+    revealOnScroll(storyCrossfade, () => playNightSequence(), {
+      root: null,
+      rootMargin: "-45% 0px -45% 0px",
+      threshold: 0,
+    });
 
-      watchBubbleBestScroll();
-    } else {
-      /* IntersectionObserver 미지원 브라우저: 그냥 다 보이게 */
-      rows.forEach(revealTimelineRow);
-      plainTargets.forEach(show);
-      if (bubbleHello) show(bubbleHello);
-      if (storyCrossfade) show(storyCrossfade);
-      if (bubbleBest) {
-        show(bubbleBest);
-        if (bubbleBestText) bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT;
-      }
-    }
+    const preciousLine = storyCrossfade
+      ? storyCrossfade.nextElementSibling
+      : null;
+    revealOnScroll(preciousLine, () => show(preciousLine));
 
-    watchCrossfadeScroll();
-    watchStoryLineTypewriters();
+    const gallery = scroll.querySelector(".story-gallery");
+    revealOnScroll(gallery, () => playGalleryChain(gallery), {
+      root: null,
+      rootMargin: "0px 0px -12% 0px",
+      threshold: 0.1,
+    });
   }
 
   /* 패널을 여는 순간 한 번만: 펼쳐지는 애니메이션이 끝난 뒤
