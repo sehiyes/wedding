@@ -725,8 +725,10 @@ function initStoryTimeline() {
   const bubbleHello = document.getElementById("bubbleHello");
   const storyCrossfade = document.getElementById("storyCrossfade");
   const bubbleBest = document.getElementById("bubbleBest");
-  const bubbleBestText = document.getElementById("bubbleBestSvgText");
-  const BUBBLE_BEST_FULL_TEXT = "여자!\u00A0\u00A0\u00A0남자!";
+  const bubbleBestLine1 = document.getElementById("bubbleBestSvgLine1");
+  const bubbleBestLine2 = document.getElementById("bubbleBestSvgText");
+  const BUBBLE_BEST_LINE1 = "내 생애 최고의";
+  const BUBBLE_BEST_LINE2 = "여자!\u00A0\u00A0\u00A0남자!";
 
   const show = (el) => {
     if (el) el.classList.add("is-visible");
@@ -755,14 +757,14 @@ function initStoryTimeline() {
   }
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
-     뱃지가 조금 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
+     뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
      2024(마지막) 줄은 사진이 다 뜬 뒤 "안녕!" 말풍선 →
      그 다음 만남 문장(#storyMeetLine) 순서로 이어짐 */
   function revealTimelineRow(row, isLast) {
     show(row);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
-    }, 350);
+    }, 450);
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
@@ -772,10 +774,10 @@ function initStoryTimeline() {
           show(bubbleHello);
           setTimeout(() => {
             show(document.getElementById("storyMeetLine"));
-          }, 600);
-        }, 650);
+          }, 850);
+        }, 900);
       }
-    }, 750);
+    }, 950);
   }
 
   /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
@@ -786,7 +788,7 @@ function initStoryTimeline() {
       () =>
         new Promise((resolve) => {
           revealTimelineRow(row, isLast);
-          setTimeout(resolve, 700);
+          setTimeout(resolve, 900);
         })
     );
   }
@@ -813,7 +815,7 @@ function initStoryTimeline() {
     show(storyCrossfade);
     frames.forEach((frame, i) => frame.classList.toggle("is-active", i === 0));
 
-    await wait(1700);
+    await wait(2100);
 
     for (let i = 1; i < 4; i++) {
       sparkleEls.forEach((el) => el.classList.remove("is-visible"));
@@ -822,29 +824,45 @@ function initStoryTimeline() {
       if (sparkle) {
         requestAnimationFrame(() => sparkle.classList.add("is-visible"));
       }
-      await wait(i === 3 ? 1900 : 1300);
+      await wait(i === 3 ? 2300 : 1600);
       frames[i - 1].classList.remove("is-active");
     }
 
     /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장 */
-    await wait(400);
+    await wait(600);
     show(preciousLine);
   }
 
-  /* "여자!   남자!" 한 글자씩 타이핑 (시간 기반) */
-  function typeBubbleBestText() {
-    if (!bubbleBestText) return;
-    bubbleBestText.textContent = "";
-    let i = 0;
-    const timer = setInterval(() => {
-      i += 1;
-      bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT.slice(0, i);
-      if (i >= BUBBLE_BEST_FULL_TEXT.length) clearInterval(timer);
-    }, 90);
+  /* 텍스트를 한 글자씩 타이핑하듯 채움 (다 채워질 때까지 대기 가능) */
+  function typeText(el, full, speed) {
+    return new Promise((resolve) => {
+      if (!el) {
+        resolve();
+        return;
+      }
+      el.textContent = "";
+      let i = 0;
+      const timer = setInterval(() => {
+        i += 1;
+        el.textContent = full.slice(0, i);
+        if (i >= full.length) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, speed);
+    });
+  }
+
+  /* 말풍선 두 줄("내 생애 최고의" → "여자!   남자!") 모두 순서대로 타이핑 */
+  async function typeBubbleBestAll() {
+    await typeText(bubbleBestLine1, BUBBLE_BEST_LINE1, 100);
+    await wait(200);
+    await typeText(bubbleBestLine2, BUBBLE_BEST_LINE2, 110);
   }
 
   /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ...
-     마지막엔 자막 → 텐트 사진 → 말풍선 순서로 시간차를 두고 나타남 */
+     마지막엔 자막 → 텐트 사진 → 말풍선(전부 타이핑) → "이제는..." 순서로
+     시간차를 두고 나타남 */
   async function playGalleryChain(gallery) {
     const children = Array.from(gallery.children);
 
@@ -854,29 +872,33 @@ function initStoryTimeline() {
         child.classList.contains("reveal")
       ) {
         show(child);
-        await wait(300);
+        await wait(500);
         continue;
       }
 
       if (child.classList.contains("story-line")) {
         show(child);
-        await wait(1400);
+        await wait(1700);
         continue;
       }
 
       if (child.classList.contains("story-panel-wrap")) {
         const tentImg = child.querySelector(".story-panel.reveal");
         show(tentImg);
-        await wait(1300);
+        await wait(1600);
 
         if (bubbleBest) {
           show(bubbleBest);
-          typeBubbleBestText();
-          await wait(900);
+          await wait(300);
+          await typeBubbleBestAll();
+          await wait(1100);
         }
         continue;
       }
     }
+
+    /* 말풍선까지 다 뜬 뒤에 마지막으로 "이제는 같은 길을..." 등장 */
+    show(document.getElementById("storyFinalLine"));
   }
 
   function setupScrollReveal() {
@@ -889,14 +911,13 @@ function initStoryTimeline() {
       })
     );
 
-    /* .story-scroll 바로 아래 문장들(첫 문장, 마지막 문장 등)은
-       전부 각자 화면에 들어오면 나타남 — querySelectorAll로 전부 잡아야
-       텐트 사진 뒤 마지막 문장도 빠지지 않음.
-       단, "서로의 가장 소중한..."(#storyPreciousLine)은 밤 공원 시퀀스가
-       끝난 뒤에만, "운동하는 곳에서..."(#storyMeetLine)는 2024 줄 →
-       안녕! 말풍선 다음에만 뜨도록 각각 별도로 처리하므로 제외 */
+    /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
+       - "서로의 가장 소중한..."(#storyPreciousLine)은 밤 공원 시퀀스 뒤
+       - "운동하는 곳에서..."(#storyMeetLine)는 2024 줄 → 안녕! 말풍선 뒤
+       - "이제는 같은 길을..."(#storyFinalLine)은 갤러리 체인의 맨 마지막
+       각각 별도 타이밍에서 직접 띄우므로 여기서는 제외 */
     const topLevelLines = scroll.querySelectorAll(
-      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine)"
+      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine):not(#storyFinalLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
 
@@ -929,6 +950,53 @@ function initStoryTimeline() {
 }
 
 
+/* ---------------------------------------------------------
+   14. 오른쪽 아래 고정된 배경음악 버튼이, 스크롤 중 다른 버튼과
+       화면상 겹쳐서 그 버튼의 클릭을 가로채는 것을 방지
+--------------------------------------------------------- */
+function initMusicButtonOverlapGuard() {
+  const musicBtn = document.getElementById("btnMusicToggle");
+  if (!musicBtn) return;
+
+  const targets = Array.from(
+    document.querySelectorAll(
+      "#btnStoryToggle, #btnRsvpToggle, #btnGuideToggle, .map-btn, .copy-chip"
+    )
+  );
+  if (!targets.length) return;
+
+  function overlaps(a, b) {
+    return !(
+      a.right < b.left ||
+      a.left > b.right ||
+      a.bottom < b.top ||
+      a.top > b.bottom
+    );
+  }
+
+  function update() {
+    const musicRect = musicBtn.getBoundingClientRect();
+    const hit = targets.some((el) => {
+      const r = el.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && overlaps(musicRect, r);
+    });
+    /* 겹칠 때만 음악 버튼의 클릭을 잠시 꺼서, 밑에 있는 버튼이 눌리게 함 */
+    musicBtn.style.pointerEvents = hit ? "none" : "";
+  }
+
+  let ticking = false;
+  window.addEventListener("scroll", () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      update();
+      ticking = false;
+    });
+  });
+  window.addEventListener("resize", update);
+  update();
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -951,5 +1019,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initLocationInfo();
   initStoryToggle();
   initStoryTimeline();
+  initMusicButtonOverlapGuard();
   initShareButtons();
 });
