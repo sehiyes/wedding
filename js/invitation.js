@@ -755,8 +755,10 @@ function initStoryTimeline() {
   }
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
-     뱃지가 조금 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남 */
-  function revealTimelineRow(row) {
+     뱃지가 조금 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
+     2024(마지막) 줄은 사진이 다 뜬 뒤 "안녕!" 말풍선 →
+     그 다음 만남 문장(#storyMeetLine) 순서로 이어짐 */
+  function revealTimelineRow(row, isLast) {
     show(row);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
@@ -764,17 +766,26 @@ function initStoryTimeline() {
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
+
+      if (isLast) {
+        setTimeout(() => {
+          show(bubbleHello);
+          setTimeout(() => {
+            show(document.getElementById("storyMeetLine"));
+          }, 600);
+        }, 650);
+      }
     }, 750);
   }
 
   /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
      한 줄씩 최소 간격을 두고 순서대로 나타나게 줄을 세움 */
   let rowRevealQueue = Promise.resolve();
-  function queueTimelineRow(row) {
+  function queueTimelineRow(row, isLast) {
     rowRevealQueue = rowRevealQueue.then(
       () =>
         new Promise((resolve) => {
-          revealTimelineRow(row);
+          revealTimelineRow(row, isLast);
           setTimeout(resolve, 700);
         })
     );
@@ -870,29 +881,24 @@ function initStoryTimeline() {
 
   function setupScrollReveal() {
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
-    rows.forEach((row) =>
-      revealOnScroll(row, () => queueTimelineRow(row), {
+    rows.forEach((row, idx) =>
+      revealOnScroll(row, () => queueTimelineRow(row, idx === rows.length - 1), {
         root: null,
         rootMargin: "0px 0px -12% 0px",
         threshold: 0.25,
       })
     );
 
-    /* .story-scroll 바로 아래 문장들(첫 문장, 만남 문장, 마지막 문장 등)은
+    /* .story-scroll 바로 아래 문장들(첫 문장, 마지막 문장 등)은
        전부 각자 화면에 들어오면 나타남 — querySelectorAll로 전부 잡아야
        텐트 사진 뒤 마지막 문장도 빠지지 않음.
-       단, "서로의 가장 소중한..." 문장(#storyPreciousLine)은 밤 공원
-       시퀀스가 다 끝난 뒤 playNightSequence 안에서만 띄우므로 제외 */
+       단, "서로의 가장 소중한..."(#storyPreciousLine)은 밤 공원 시퀀스가
+       끝난 뒤에만, "운동하는 곳에서..."(#storyMeetLine)는 2024 줄 →
+       안녕! 말풍선 다음에만 뜨도록 각각 별도로 처리하므로 제외 */
     const topLevelLines = scroll.querySelectorAll(
-      ".story-scroll > .story-line:not(#storyPreciousLine)"
+      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
-
-    revealOnScroll(bubbleHello, () => show(bubbleHello), {
-      root: null,
-      rootMargin: "0px 0px -20% 0px",
-      threshold: 0.4,
-    });
 
     /* 밤 공원 구간이 화면 중간쯤 들어오면 시작.
        다음 문장("서로의 가장 소중한 사람이...")은 이 시퀀스가

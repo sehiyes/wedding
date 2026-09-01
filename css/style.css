@@ -678,6 +678,9 @@ input:focus-visible,
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.4s var(--ease);
+  /* 이 패널이 접혔다 펼쳐지며 높이가 바뀔 때, 브라우저의 스크롤 앵커링
+     때문에 화면이 엉뚱한 곳으로 튀는 것을 방지 */
+  overflow-anchor: none;
 }
 .guide-panel-inner {
   background: var(--ivory);
@@ -1977,9 +1980,13 @@ input:focus-visible,
   color: #ffffff !important;
 }
 
-/* 우리들의 이야기 토글을 가족 이름 줄 바로 아래, 별도 섹션 타이틀 없이 배치 */
+/* 우리들의 이야기 토글을 가족 이름 줄 바로 아래, 별도 섹션 타이틀 없이 배치
+   - 오른쪽 아래 고정된 음악 재생 버튼(z-index:60)과 화면상 겹칠 때
+     이 버튼이 클릭을 가로채도록(위에 오도록) z-index를 더 높여둠 */
 .story-inline-toggle {
   margin-top: 36px;
+  position: relative;
+  z-index: 65;
 }
 
 /* =========================================================

@@ -58,6 +58,24 @@
 </head>
 <body>
 <script>
+  // 브라우저가 새로고침/뒤로가기 시 이전 스크롤 위치를 임의로 복원해서
+  // "갑자기 페이지 중간/아래로 내려가 있는" 현상이 생기는 것을 방지.
+  // scrollRestoration 설정만으로는 타이밍상 안 먹힐 때가 있어서,
+  // 로딩 초반 여러 시점에 강제로 맨 위로 되돌림.
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+  function __forceScrollTop() {
+    window.scrollTo(0, 0);
+  }
+  __forceScrollTop();
+  document.addEventListener("DOMContentLoaded", __forceScrollTop);
+  window.addEventListener("load", __forceScrollTop);
+  setTimeout(__forceScrollTop, 0);
+  setTimeout(__forceScrollTop, 100);
+  setTimeout(__forceScrollTop, 300);
+</script>
+<script>
   // 스크립트 파일 하나가 어떤 이유로든 실행에 실패하는 극단적인 경우를 대비한 안전장치.
   // 2.5초 안에 main.js의 정상 표시 로직이 실행되지 않으면, 강제로 모든 섹션을 보이게 합니다.
   setTimeout(function () {
