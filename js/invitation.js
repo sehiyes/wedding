@@ -724,23 +724,9 @@ function initStoryTimeline() {
   const bubbleHello = document.getElementById("bubbleHello");
   const storyCrossfade = document.getElementById("storyCrossfade");
   const bubbleBest = document.getElementById("bubbleBest");
-  const bubbleBestText = bubbleBest
-    ? bubbleBest.querySelector(".bubble-best-text")
-    : null;
+  const bubbleBestText = document.getElementById("bubbleBestSvgText");
   const campingPhoto = document.querySelector("#campingWrap .story-panel");
-
-  /* "여자!   남자!" 글자를 한 글자씩 타이핑하듯 보여줌 */
-  function typeBubbleBestText() {
-    if (!bubbleBestText) return;
-    const full = "여자!\u00A0\u00A0\u00A0남자!";
-    bubbleBestText.textContent = "";
-    let i = 0;
-    const timer = setInterval(() => {
-      i += 1;
-      bubbleBestText.textContent = full.slice(0, i);
-      if (i >= full.length) clearInterval(timer);
-    }, 90);
-  }
+  const BUBBLE_BEST_FULL_TEXT = "여자!\u00A0\u00A0\u00A0남자!";
 
   const show = (el) => {
     if (el) el.classList.add("is-visible");
@@ -780,9 +766,8 @@ function initStoryTimeline() {
 
       /* 이 구간이 화면 맨 아래에서 맨 위까지 지나가는 전체 거리 대비
          지금까지 스크롤해서 지나온 비율(0~1)
-         - 절반 정도만 스크롤해도 4컷이 다 넘어가도록 거리를 짧게 잡아
-           전환이 더 빠르게 느껴지도록 함 */
-      const total = (rect.height + vh) * 0.55;
+         - 필요한 스크롤량을 살짝만 늘려 전환을 조금 더 여유있게 */
+      const total = (rect.height + vh) * 0.62;
       const traveled = vh - rect.top;
       const progress = Math.min(1, Math.max(0, traveled / total));
 
@@ -814,12 +799,117 @@ function initStoryTimeline() {
     update();
   }
 
-  function setupScrollReveal() {
-    /* 스크롤 위치로 개별 등장시킬 요소들: 문장 한 줄, 갤러리 사진,
-       "베스트!" 말풍선 등 (타임라인 줄/크로스페이드는 별도 처리) */
-    const plainTargets = scroll.querySelectorAll(
-      ".story-scroll > .story-line, .story-gallery .story-panel, .story-gallery .story-line"
+  /* 텐트 사진이 화면 중앙 쪽으로 올라오는 만큼(스크롤한 만큼)
+     말풍선이 나타나고, "여자!   남자!" 글자도 한 글자씩 채워짐 */
+  function watchBubbleBestScroll() {
+    if (!bubbleBest || !campingPhoto) return;
+
+    let shown = false;
+    let maxCount = 0;
+    let ticking = false;
+
+    function update() {
+      const rect = campingPhoto.getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+
+      /* 트리거 기준점: 화면의 55% 지점 (대략 중앙보다 살짝 아래) */
+      const triggerLine = vh * 0.55;
+      if (rect.top > triggerLine) return;
+
+      if (!shown) {
+        shown = true;
+        show(bubbleBest);
+        if (bubbleBestText) bubbleBestText.textContent = "";
+      }
+
+      /* 트리거 지점을 지나 240px 스크롤하는 동안 글자가 다 채워짐 */
+      const progress = Math.min(
+        1,
+        Math.max(0, (triggerLine - rect.top) / 240)
+      );
+      const count = Math.floor(progress * BUBBLE_BEST_FULL_TEXT.length);
+
+      if (count > maxCount) {
+        maxCount = count;
+        if (bubbleBestText) {
+          bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT.slice(
+            0,
+            maxCount
+          );
+        }
+      }
+    }
+
+    window.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    });
+    update();
+  }
+
+  /* 문장 캡션들("같은 해에 태어나...", "운명적으로... 만나게 되어" 등)도
+     화면에 다가온 만큼(스크롤한 만큼) 한 글자씩 채워지며 나타남 */
+  function watchStoryLineTypewriters() {
+    const lines = Array.from(
+      scroll.querySelectorAll(".story-scroll > .story-line, .story-gallery .story-line")
     );
+    if (!lines.length) return;
+
+    const states = lines.map((el) => {
+      const full = el.textContent;
+      el.textContent = "";
+      return { el, full, shown: false, maxCount: 0 };
+    });
+
+    let ticking = false;
+
+    function update() {
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const triggerLine = vh * 0.82;
+
+      states.forEach((state) => {
+        if (state.maxCount >= state.full.length) return;
+
+        const rect = state.el.getBoundingClientRect();
+        if (rect.top > triggerLine) return;
+
+        if (!state.shown) {
+          state.shown = true;
+          show(state.el);
+        }
+
+        const progress = Math.min(
+          1,
+          Math.max(0, (triggerLine - rect.top) / 200)
+        );
+        const count = Math.ceil(progress * state.full.length);
+
+        if (count > state.maxCount) {
+          state.maxCount = count;
+          state.el.textContent = state.full.slice(0, count);
+        }
+      });
+    }
+
+    window.addEventListener("scroll", () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    });
+    update();
+  }
+
+  function setupScrollReveal() {
+    /* 스크롤 위치로 개별 등장시킬 요소들: 갤러리 사진 등
+       (문장 캡션/타임라인 줄/크로스페이드/베스트 말풍선은 별도 처리) */
+    const plainTargets = scroll.querySelectorAll(".story-gallery .story-panel");
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
 
     if ("IntersectionObserver" in window) {
@@ -875,21 +965,7 @@ function initStoryTimeline() {
         crossfadeObserver.observe(storyCrossfade);
       }
 
-      /* 텐트 사진이 화면 중간쯤 올라오면 말풍선이 뜨고 타이핑 시작 */
-      if (bubbleBest && campingPhoto) {
-        const bestObserver = new IntersectionObserver(
-          (entries, obs) => {
-            entries.forEach((entry) => {
-              if (!entry.isIntersecting) return;
-              obs.unobserve(entry.target);
-              show(bubbleBest);
-              setTimeout(typeBubbleBestText, 350);
-            });
-          },
-          { root: null, rootMargin: "-50% 0px -50% 0px", threshold: 0 }
-        );
-        bestObserver.observe(campingPhoto);
-      }
+      watchBubbleBestScroll();
     } else {
       /* IntersectionObserver 미지원 브라우저: 그냥 다 보이게 */
       rows.forEach(revealTimelineRow);
@@ -898,11 +974,12 @@ function initStoryTimeline() {
       if (storyCrossfade) show(storyCrossfade);
       if (bubbleBest) {
         show(bubbleBest);
-        typeBubbleBestText();
+        if (bubbleBestText) bubbleBestText.textContent = BUBBLE_BEST_FULL_TEXT;
       }
     }
 
     watchCrossfadeScroll();
+    watchStoryLineTypewriters();
   }
 
   /* 패널을 여는 순간 한 번만: 펼쳐지는 애니메이션이 끝난 뒤

@@ -2195,8 +2195,9 @@ input:focus-visible,
 .story-bubble-best {
   position: absolute;
   left: 50%;
-  top: -24%;
-  width: 30%;
+  top: -38%;
+  width: 44%;
+  min-width: 132px;
   transform: translate(-50%, 0) scale(0.85);
   opacity: 0;
   transition: opacity 0.5s ease, transform 0.5s ease;
@@ -2209,31 +2210,36 @@ input:focus-visible,
   opacity: 1;
   transform: translate(-50%, 0) scale(1);
 }
-.story-bubble-best img {
+.bubble-best-svg {
   width: 100%;
   height: auto;
   display: block;
+  overflow: visible;
 }
-.bubble-best-text {
-  position: absolute;
-  left: 50%;
-  top: 66%;
-  transform: translate(-50%, -50%);
+.bubble-best-outline {
+  fill: #ffffff;
+  stroke: #2b2b2b;
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.bubble-best-line1,
+.bubble-best-line2 {
   font-family: var(--font-accent);
+  fill: var(--ink);
+}
+.bubble-best-line1 {
   font-weight: 700;
-  font-size: 1.35rem;
-  line-height: 1;
-  color: var(--ink);
-  text-shadow:
-    0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff,
-    1px 1px 0 #fff, -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff;
-  white-space: nowrap;
+  font-size: 23px;
+}
+.bubble-best-line2 {
+  font-weight: 800;
+  font-size: 30px;
 }
 
 @media (max-width: 359px) {
   .timeline-badge-img { width: 30%; }
   .story-line { font-size: 1rem; }
-  .bubble-best-text { font-size: 1.05rem; }
 }
 
 /* ===== 우리들의 이야기 간격 ===== */
