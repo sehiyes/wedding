@@ -2260,9 +2260,9 @@ input:focus-visible,
   margin-bottom: 20px;
 }
 
-#storyMadeLine {
-  margin-top: 30px;
-  margin-bottom: 90px;
+#storyFinalLine {
+  margin-top: 60px;
+  margin-bottom: 30px;
 }
 
 /* JS가 순서를 직접 제어 */

@@ -747,9 +747,10 @@ function initStoryTimeline() {
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
      뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
-     2024(마지막) 줄이 끝나면 이어서 안녕!→만남 문장→밤 공원→
-     소중한 문장→갤러리까지 전부 하나의 흐름으로 이어짐 */
-  function revealTimelineRow(row, isLast) {
+     2024(마지막) 줄은 "그리고 2024년" 자막이 먼저 뜬 뒤에 시작되고,
+     끝나면 이어서 안녕!→만남 문장→밤 공원→소중한 문장→갤러리까지
+     전부 하나의 흐름으로 이어짐 */
+  function revealTimelineRowContent(row, isLast) {
     show(row);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
@@ -762,6 +763,15 @@ function initStoryTimeline() {
         continueAfterLastRow();
       }
     }, 950);
+  }
+
+  function revealTimelineRow(row, isLast) {
+    if (isLast) {
+      show(document.getElementById("timeline2024Caption"));
+      setTimeout(() => revealTimelineRowContent(row, true), 1400);
+      return;
+    }
+    revealTimelineRowContent(row, false);
   }
 
   /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
@@ -847,9 +857,10 @@ function initStoryTimeline() {
     await typeText(bubbleBestLine2, BUBBLE_BEST_LINE2, 110);
   }
 
-  /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ...
-     마지막엔 자막 → 텐트 사진 → 말풍선(전부 타이핑) → "이제는..." 순서로
-     시간차를 두고 나타남 */
+  /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ... 순서로 이어지다가,
+     "이제는 같은 길을..." → 텐트 사진 → 말풍선(전부 타이핑) →
+     마지막 "2027.04.18 / 저희 결혼합니다!" 순서로 나타남
+     (전부 gallery의 자식 순서 그대로, 이 반복문 하나로 처리됨) */
   async function playGalleryChain(gallery) {
     const children = Array.from(gallery.children);
 
@@ -883,9 +894,6 @@ function initStoryTimeline() {
         continue;
       }
     }
-
-    /* 말풍선까지 다 뜬 뒤에 마지막으로 "이제는 같은 길을..." 등장 */
-    show(document.getElementById("storyFinalLine"));
   }
 
   /* 2024 줄 사진이 다 뜬 뒤부터는 스크롤과 상관없이
@@ -923,12 +931,13 @@ function initStoryTimeline() {
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
        - "서로의 가장 소중한..."(#storyPreciousLine): 밤 공원 시퀀스 뒤
        - "운동하는 곳에서..."(#storyMeetLine): 2024 줄 → 안녕! 말풍선 뒤
-       - "이제는 같은 길을..."(#storyFinalLine): 갤러리 체인의 맨 마지막
+       - "이제는 같은 길을..."(#storyFinalLine)은 이제 .story-gallery 안으로
+         옮겨져서 갤러리 체인에서 순서대로 처리되므로 이 선택자와는 무관
        전부 continueAfterLastRow() 체인 안에서 순서대로 직접 띄우므로
        여기서는 제외하고, 밤공원/갤러리도 더 이상 독립적으로 스크롤
        트리거하지 않음 (그 앞 문장이 뜨기 전에 먼저 재생되던 문제 방지) */
     const topLevelLines = scroll.querySelectorAll(
-      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine):not(#storyFinalLine)"
+      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
   }
