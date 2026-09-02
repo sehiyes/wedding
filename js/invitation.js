@@ -801,13 +801,13 @@ function initStoryTimeline() {
     show(document.getElementById("timeline2024QCaption"));
     await wait(1300);
 
-    show(document.getElementById("interviewPanelB"));
+    show(document.getElementById("timeline2024ImgBAgain"));
     await wait(1300);
 
     show(document.getElementById("interviewBubbleLeft"));
     await wait(1700);
 
-    show(document.getElementById("interviewPanelA"));
+    show(document.getElementById("timeline2024ImgAAgain"));
     await wait(1300);
 
     show(document.getElementById("interviewBubbleRight"));
@@ -963,12 +963,11 @@ function initStoryTimeline() {
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
     rows.forEach((row, idx) => {
       const isLast = idx === rows.length - 1;
-      /* 2024(마지막) 줄은 앞 줄들의 대기열(큐)에 걸리지 않고, 스크롤로
-         들어오면 바로 자막부터 시작되게 함 — 큐를 타면 앞 줄들 지연이
-         쌓여서 "그리고 2024년..." 자막이 늦게 뜨는 문제가 있었음 */
+      /* 모든 줄(2024 포함)을 대기열에 태워서, 앞 줄들이 다 뜨기 전에
+         2024 자막이 먼저 뜨는 순서 오류가 생기지 않게 함 */
       revealOnScroll(
         row,
-        () => (isLast ? revealTimelineRow(row, true) : queueTimelineRow(row, false)),
+        () => queueTimelineRow(row, isLast),
         { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.25 }
       );
     });
