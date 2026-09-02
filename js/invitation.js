@@ -909,7 +909,7 @@ function initStoryTimeline() {
      만남+소중한 문장 → 밤 공원. 밤공원 이후(갤러리)는 다시
      각자 스크롤에 맞춰 독립적으로 나타남 */
   async function startInterviewChain() {
-    await wait(1000);
+    await wait(1900);
     await typeLineCaption(document.getElementById("timeline2024QCaption"), 55);
     await wait(600);
 
@@ -1030,6 +1030,7 @@ function initStoryTimeline() {
      여자 인터뷰 사진(오른쪽) → 여자 말풍선(왼쪽, 말꼬리 오른쪽) →
      남자 인터뷰 사진(왼쪽) → 남자 말풍선(오른쪽, 말꼬리 왼쪽) */
   async function playSecondInterviewQA() {
+    await wait(1300);
     await typeLineCaption(document.getElementById("storySecondQCaption"), 55);
     await wait(600);
 
