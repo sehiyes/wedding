@@ -2428,10 +2428,10 @@ input:focus-visible,
   transform: translateX(-22px);
 }
 #interviewBubbleLeft2 .interview-bubble-text {
-  transform: translate(20px, -55px);
+  transform: translate(20px, -62px);
 }
 #interviewBubbleRight2 .interview-bubble-text {
-  transform: translate(-20px, -55px);
+  transform: translate(-20px, -62px);
 }
 
 /* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
