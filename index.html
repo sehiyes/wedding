@@ -60,20 +60,20 @@
 <script>
   // 브라우저가 새로고침/뒤로가기 시 이전 스크롤 위치를 임의로 복원해서
   // "갑자기 페이지 중간/아래로 내려가 있는" 현상이 생기는 것을 방지.
-  // scrollRestoration 설정만으로는 타이밍상 안 먹힐 때가 있어서,
-  // 로딩 초반 여러 시점에 강제로 맨 위로 되돌림.
+  // 단, 이미지가 다 로드되기 전에 사용자가 이미 스크롤을 내렸다면
+  // (window.load가 늦게 뜨는 무거운 페이지라 이런 경우가 흔함)
+  // 그 스크롤을 강제로 취소해서 맨 위로 튕기는 일이 없도록,
+  // "아직 맨 위 근처일 때만" 되돌리게 함.
   if ("scrollRestoration" in history) {
     history.scrollRestoration = "manual";
   }
   function __forceScrollTop() {
-    window.scrollTo(0, 0);
+    if (window.scrollY < 80) {
+      window.scrollTo(0, 0);
+    }
   }
   __forceScrollTop();
   document.addEventListener("DOMContentLoaded", __forceScrollTop);
-  window.addEventListener("load", __forceScrollTop);
-  setTimeout(__forceScrollTop, 0);
-  setTimeout(__forceScrollTop, 100);
-  setTimeout(__forceScrollTop, 300);
 </script>
 <script>
   // 스크립트 파일 하나가 어떤 이유로든 실행에 실패하는 극단적인 경우를 대비한 안전장치.
@@ -237,57 +237,53 @@
 
               <div class="interview-turn">
                 <div class="interview-bubble-wrap reveal" id="interviewBubbleLeft">
-                  <svg class="interview-bubble-svg" viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path class="interview-bubble-outline" d="M20,132
-                             C14,74 46,24 104,18
-                             C150,-4 250,-2 296,18
-                             C332,26 350,68 342,112
-                             C358,116 374,130 376,154
-                             C378,172 364,186 346,188
-                             C348,200 340,212 328,214
-                             C322,206 322,198 322,190
-                             C298,202 196,210 128,198
-                             C60,188 24,172 20,132 Z" />
-                    <text x="176" y="66" text-anchor="middle" class="interview-bubble-text">
-                      <tspan x="176" dy="0">운동하는 친구들과의</tspan>
-                      <tspan x="176" dy="27">술자리에서 처음봤는데,</tspan>
-                      <tspan x="176" dy="27">처음 보자마자 너무</tspan>
-                      <tspan x="176" dy="27">귀엽고 재밌고</tspan>
-                      <tspan x="176" dy="27">다하던데요ㅠㅠ?</tspan>
-                      <tspan x="176" dy="27">그래서 제가 먼저</tspan>
-                      <tspan x="176" dy="27">연락했어요^^</tspan>
+                  <svg class="interview-bubble-svg" viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path class="interview-bubble-outline interview-bubble-outline--r" d="M20,160
+                             C14,86 60,22 130,18
+                             C190,-4 300,-2 362,20
+                             C408,36 420,82 410,134
+                             C446,124 468,132 466,144
+                             C464,156 432,160 408,166
+                             C416,206 386,244 320,258
+                             C238,272 116,266 68,236
+                             C24,210 22,196 20,160 Z" />
+                    <text x="205" y="82" text-anchor="middle" class="interview-bubble-text">
+                      <tspan x="205" dy="0">운동하는 친구들과의</tspan>
+                      <tspan x="205" dy="42">술자리에서 처음봤는데,</tspan>
+                      <tspan x="205" dy="42">처음 보자마자 너무 귀엽고</tspan>
+                      <tspan x="205" dy="42">재밌고 다하던데요ㅠㅠ?</tspan>
+                      <tspan x="205" dy="42">그래서 제가 먼저</tspan>
+                      <tspan x="205" dy="42">연락했어요^^</tspan>
                     </text>
                   </svg>
                 </div>
                 <img class="interview-photo-small reveal" id="timeline2024ImgBAgain" src="images/story/timeline-2024-b-interview.png" alt="" loading="lazy" />
               </div>
 
-              <div class="interview-turn">
+              <div class="interview-turn interview-turn--reverse">
+                <img class="interview-photo-small reveal" id="timeline2024ImgAAgain" src="images/story/timeline-2024-a-interview.png" alt="" loading="lazy" />
                 <div class="interview-bubble-wrap reveal" id="interviewBubbleRight">
-                  <svg class="interview-bubble-svg" viewBox="0 0 400 340" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                    <path class="interview-bubble-outline" d="M20,132
-                             C14,74 46,24 104,18
-                             C150,-4 250,-2 296,18
-                             C332,26 350,68 342,112
-                             C358,116 374,130 376,154
-                             C378,172 364,186 346,188
-                             C348,200 340,212 328,214
-                             C322,206 322,198 322,190
-                             C298,202 196,210 128,198
-                             C60,188 24,172 20,132 Z" />
-                    <text x="176" y="66" text-anchor="middle" class="interview-bubble-text">
-                      <tspan x="176" dy="0">3개월 전에 운동하면서</tspan>
-                      <tspan x="176" dy="27">처음 봤었는데, 그 후로</tspan>
-                      <tspan x="176" dy="27">안보이길래 아쉬웠는데...</tspan>
-                      <tspan x="176" dy="27">처음 운동하는</tspan>
-                      <tspan x="176" dy="27">친구들과의 술자리를</tspan>
-                      <tspan x="176" dy="27">갔는데 딱!</tspan>
-                      <tspan x="176" dy="27">나타나더라구요..</tspan>
-                      <tspan x="176" dy="27">완전 럭키였어요!!</tspan>
+                  <svg class="interview-bubble-svg" viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path class="interview-bubble-outline interview-bubble-outline--l" d="M440,160
+                             C446,86 400,22 330,18
+                             C270,-4 160,-2 98,20
+                             C52,36 40,82 50,134
+                             C14,124 -8,132 -6,144
+                             C-4,156 28,160 52,166
+                             C44,206 74,244 140,258
+                             C222,272 344,266 392,236
+                             C436,210 438,196 440,160 Z" />
+                    <text x="255" y="82" text-anchor="middle" class="interview-bubble-text">
+                      <tspan x="255" dy="0">3개월 전에 운동하면서</tspan>
+                      <tspan x="255" dy="42">처음 봤었는데, 그 후로</tspan>
+                      <tspan x="255" dy="42">안보이길래 아쉬웠는데...</tspan>
+                      <tspan x="255" dy="42">처음 운동하는 친구들과의</tspan>
+                      <tspan x="255" dy="42">술자리를 갔는데 딱!</tspan>
+                      <tspan x="255" dy="42">나타나더라구요..</tspan>
+                      <tspan x="255" dy="42">완전 럭키였어요!!</tspan>
                     </text>
                   </svg>
                 </div>
-                <img class="interview-photo-small reveal" id="timeline2024ImgAAgain" src="images/story/timeline-2024-a-interview.png" alt="" loading="lazy" />
               </div>
 
               <p class="story-line reveal" id="storyMeetLine">다행이도(?) 서로 마음이 통해<br />서로의 가장 소중한 사람이 되었습니다</p>
@@ -326,6 +322,52 @@
                 <img class="story-panel reveal" src="images/story/story-panel-6.jpg" alt="" loading="lazy" />
 
                 <p class="story-line reveal" id="storyFinalLine">이제는 같은 길을, 평생 함께 걸어가려 합니다.</p>
+
+                <p class="story-line reveal" id="storySecondQCaption">Q. 그래서, 결혼을 왜 결심했나요?</p>
+
+                <div class="interview-turn">
+                  <div class="interview-bubble-wrap reveal" id="interviewBubbleLeft2">
+                    <svg class="interview-bubble-svg" viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path class="interview-bubble-outline interview-bubble-outline--r" d="M20,160
+                               C14,86 60,22 130,18
+                               C190,-4 300,-2 362,20
+                               C408,36 420,82 410,134
+                               C446,124 468,132 466,144
+                               C464,156 432,160 408,166
+                               C416,206 386,244 320,258
+                               C238,272 116,266 68,236
+                               C24,210 22,196 20,160 Z" />
+                      <text x="205" y="110" text-anchor="middle" class="interview-bubble-text">
+                        <tspan x="205" dy="0">제가 본 남자 중</tspan>
+                        <tspan x="205" dy="42">가장 완벽했어요!!</tspan>
+                        <tspan x="205" dy="42">그래서 제가 먼저</tspan>
+                        <tspan x="205" dy="42">하자고 졸랐답니다^^+</tspan>
+                      </text>
+                    </svg>
+                  </div>
+                  <img class="interview-photo-small reveal" id="timeline2024ImgBAgain2" src="images/story/timeline-2024-b-interview.png" alt="" loading="lazy" />
+                </div>
+
+                <div class="interview-turn interview-turn--reverse">
+                  <img class="interview-photo-small reveal" id="timeline2024ImgAAgain2" src="images/story/timeline-2024-a-interview.png" alt="" loading="lazy" />
+                  <div class="interview-bubble-wrap reveal" id="interviewBubbleRight2">
+                    <svg class="interview-bubble-svg" viewBox="0 0 460 380" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                      <path class="interview-bubble-outline interview-bubble-outline--l" d="M440,160
+                               C446,86 400,22 330,18
+                               C270,-4 160,-2 98,20
+                               C52,36 40,82 50,134
+                               C14,124 -8,132 -6,144
+                               C-4,156 28,160 52,166
+                               C44,206 74,244 140,258
+                               C222,272 344,266 392,236
+                               C436,210 438,196 440,160 Z" />
+                      <text x="255" y="130" text-anchor="middle" class="interview-bubble-text">
+                        <tspan x="255" dy="0">-아직 미정 입니다</tspan>
+                        <tspan x="255" dy="42">--------------?</tspan>
+                      </text>
+                    </svg>
+                  </div>
+                </div>
 
                 <div class="story-panel-wrap" id="campingWrap">
                   <img class="story-panel reveal" src="images/story/story-panel-7.jpg" alt="" loading="lazy" />
