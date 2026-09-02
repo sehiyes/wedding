@@ -2292,6 +2292,46 @@ input:focus-visible,
 #storyMeetLine {
   margin-top: 60px;
   margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+/* "안녕!" 말풍선과 인터뷰 구간 사이 간격을 넉넉하게 */
+#timeline2024QCaption {
+  margin-top: 90px;
+}
+
+.interview-panel {
+  text-align: center;
+  margin: 4px 0 6px;
+}
+.interview-photo {
+  width: 62%;
+  max-width: 260px;
+  height: auto;
+  border-radius: 16px;
+  display: inline-block;
+}
+.interview-bubble-wrap {
+  text-align: center;
+  margin: 0 0 34px;
+}
+.interview-bubble-svg {
+  width: 82%;
+  max-width: 320px;
+  height: auto;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
+}
+.interview-bubble-outline {
+  fill: #ffffff;
+  stroke: #2b2b2b;
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.interview-bubble-text {
+  font-family: var(--font-body);
+  font-size: 19px;
+  fill: var(--ink);
 }
 
 #storyFinalLine {
@@ -2301,7 +2341,7 @@ input:focus-visible,
 
 #storyWeddingDateLine {
   font-family: var(--font-title);
-  font-size: 1.75rem;
+  font-size: 1.225rem;
   line-height: 1.5;
   margin-top: 40px;
 }
