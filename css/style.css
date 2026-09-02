@@ -2412,17 +2412,17 @@ input:focus-visible,
      Left2/Right2 (±22px, -18px) */
 /* "Q. 처음봤던순간..." 인터뷰: 1번째(왼쪽) 살짝 우측, 2번째(오른쪽) 살짝 좌측 */
 #interviewBubbleLeft {
-  transform: translateX(22px);
+  transform: translateX(33px);
 }
 #interviewBubbleRight {
-  transform: translateX(-22px);
+  transform: translateX(-33px);
 }
 /* "그래서 결혼을..." 인터뷰: 1번째 우측+위쪽, 2번째 좌측+위쪽 */
 #interviewBubbleLeft2 {
-  transform: translate(22px, -18px);
+  transform: translate(33px, -30px);
 }
 #interviewBubbleRight2 {
-  transform: translate(-22px, -18px);
+  transform: translate(-33px, -30px);
 }
 
 /* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
