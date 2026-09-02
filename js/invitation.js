@@ -751,7 +751,7 @@ function initStoryTimeline() {
     show(row);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
-    }, 450);
+    }, 500);
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
@@ -759,7 +759,7 @@ function initStoryTimeline() {
       if (isLast) {
         continueAfterLastRow();
       }
-    }, 950);
+    }, 1300);
   }
 
   function revealTimelineRow(row, isLast) {
@@ -824,7 +824,7 @@ function initStoryTimeline() {
       () =>
         new Promise((resolve) => {
           revealTimelineRow(row, isLast);
-          setTimeout(resolve, 900);
+          setTimeout(resolve, 1300);
         })
     );
   }
@@ -896,9 +896,10 @@ function initStoryTimeline() {
   async function typeBubbleBestAll() {
     if (bubbleBestLine1) bubbleBestLine1.textContent = "";
     if (bubbleBestLine2) bubbleBestLine2.textContent = "";
+    /* "내 생애 최고의"는 타이핑, "여자!   남자!"는 타이핑 없이 바로 표시 */
     await typeText(bubbleBestLine1, BUBBLE_BEST_LINE1, 100);
     await wait(250);
-    await typeText(bubbleBestLine2, BUBBLE_BEST_LINE2, 110);
+    if (bubbleBestLine2) bubbleBestLine2.textContent = BUBBLE_BEST_LINE2;
   }
 
   /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ... 순서로 이어지다가,
@@ -909,6 +910,11 @@ function initStoryTimeline() {
     const children = Array.from(gallery.children);
 
     for (const child of children) {
+      if (child.id === "storySecondQCaption") {
+        await playSecondInterviewQA();
+        continue;
+      }
+
       if (
         child.classList.contains("story-panel") &&
         child.classList.contains("reveal")
@@ -938,6 +944,26 @@ function initStoryTimeline() {
         continue;
       }
     }
+  }
+
+  /* 두 번째 인터뷰 Q&A: "Q. 그래서, 결혼을 왜 결심했나요?" 자막 →
+     여자 인터뷰 사진(오른쪽) → 여자 말풍선(왼쪽, 말꼬리 오른쪽) →
+     남자 인터뷰 사진(왼쪽) → 남자 말풍선(오른쪽, 말꼬리 왼쪽) */
+  async function playSecondInterviewQA() {
+    show(document.getElementById("storySecondQCaption"));
+    await wait(1300);
+
+    show(document.getElementById("timeline2024ImgBAgain2"));
+    await wait(1300);
+
+    show(document.getElementById("interviewBubbleLeft2"));
+    await wait(1700);
+
+    show(document.getElementById("timeline2024ImgAAgain2"));
+    await wait(1300);
+
+    show(document.getElementById("interviewBubbleRight2"));
+    await wait(1300);
   }
 
   /* 2024 시퀀스(캡션→뱃지→b사진→왼쪽말풍선→a사진→오른쪽말풍선)가
