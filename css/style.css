@@ -2514,3 +2514,9 @@ input:focus-visible,
   -webkit-text-security: disc;
   text-security: disc;
 }
+
+/* ===== ONLY: "결혼 결심" 인터뷰 말풍선(#interviewBubbleLeft2) 위쪽 4줄만
+   글씨 크기 1포인트(약 1.33px) 축소: 34px -> 32.7px ===== */
+.ib-text-sm {
+  font-size: 32.7px;
+}
