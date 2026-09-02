@@ -119,7 +119,7 @@ async function renderMessages() {
 
   const { data, error } = await supabaseClient
     .from("guestbook_messages")
-    .select("name, message, created_at, tree_shape")
+    .select("id, name, message, created_at, tree_shape")
     .order("created_at", { ascending: false });
 
   if (error) {
@@ -148,7 +148,7 @@ async function renderMessages() {
             <path d="M2 2 L12 10 L22 2 Z" fill="#d0453f"/>
           </svg>
           <div class="tree-from-label">FROM</div>
-          <div class="tree-from-name">${escapeHtml(m.name)}</div>
+          <div class="tree-from-name fontzip-nanum-siugwiyeoweo">${escapeHtml(m.name)}</div>
         </div>
       </div>
     `;
@@ -209,12 +209,24 @@ function initGardenCarousel() {
   window.addEventListener("resize", updateGardenActiveTree);
 }
 
+/* 삭제 기능이 참조할 수 있도록, 현재 팝업에 열려있는 메시지를 기억해둠 */
+let currentTreeMessage = null;
+
+function closeTreeDeleteForm() {
+  const deleteForm = document.getElementById("treeDeleteForm");
+  const pwInput = document.getElementById("treeDeletePassword");
+  if (deleteForm) deleteForm.classList.remove("is-open");
+  if (pwInput) pwInput.value = "";
+}
+
 function openTreeModal(m) {
+  currentTreeMessage = m;
+  closeTreeDeleteForm();
   const backdrop = document.getElementById("treeModalBackdrop");
   const body = document.getElementById("treeModalBody");
   body.innerHTML = `
-    <div class="tm-from">from. ${escapeHtml(m.name)}</div>
-    <div class="tm-message">${escapeHtml(m.message)}</div>
+    <div class="tm-from fontzip-nanum-siugwiyeoweo">from. ${escapeHtml(m.name)}</div>
+    <div class="tm-message fontzip-nanum-siugwiyeoweo">${escapeHtml(m.message)}</div>
     <div class="tm-date">${formatDate(m.created_at)}</div>
   `;
   backdrop.classList.add("is-open");
@@ -223,9 +235,60 @@ function openTreeModal(m) {
 function initTreeModal() {
   const backdrop = document.getElementById("treeModalBackdrop");
   const closeBtn = document.getElementById("treeModalClose");
-  closeBtn.addEventListener("click", () => backdrop.classList.remove("is-open"));
+  closeBtn.addEventListener("click", () => {
+    backdrop.classList.remove("is-open");
+    closeTreeDeleteForm();
+  });
   backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) backdrop.classList.remove("is-open");
+    if (e.target === backdrop) {
+      backdrop.classList.remove("is-open");
+      closeTreeDeleteForm();
+    }
+  });
+}
+
+/* ---------------------------------------------------------
+   08-1. 나무(방명록) 삭제 - 작성 시 입력한 비밀번호가 맞을 때만
+   서버(Postgres) 함수가 실제로 삭제를 수행함 (delete_guestbook_message)
+--------------------------------------------------------- */
+function initTreeDelete() {
+  const deleteBtn = document.getElementById("btnTreeDelete");
+  const deleteForm = document.getElementById("treeDeleteForm");
+  const pwInput = document.getElementById("treeDeletePassword");
+  const confirmBtn = document.getElementById("btnTreeDeleteConfirm");
+  if (!deleteBtn || !deleteForm || !pwInput || !confirmBtn) return;
+
+  deleteBtn.addEventListener("click", () => {
+    deleteForm.classList.toggle("is-open");
+    pwInput.value = "";
+    if (deleteForm.classList.contains("is-open")) pwInput.focus();
+  });
+
+  confirmBtn.addEventListener("click", async () => {
+    if (!requireSupabase() || !currentTreeMessage) return;
+    const pw = pwInput.value.trim();
+    if (!pw) {
+      showToast("삭제 비밀번호를 입력해주세요.");
+      return;
+    }
+
+    confirmBtn.disabled = true;
+    const { data, error } = await supabaseClient.rpc("delete_guestbook_message", {
+      input_id: currentTreeMessage.id,
+      input_password: pw,
+    });
+    confirmBtn.disabled = false;
+
+    if (error || data !== true) {
+      showToast("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
+    document.getElementById("treeModalBackdrop").classList.remove("is-open");
+    closeTreeDeleteForm();
+    currentTreeMessage = null;
+    await renderMessages();
+    showToast("나무를 삭제했습니다.");
   });
 }
 
@@ -292,14 +355,19 @@ function initMessageForm() {
 
     const name = document.getElementById("msgName").value.trim();
     const message = document.getElementById("msgText").value.trim();
+    const password = document.getElementById("msgPassword").value.trim();
     if (!name || !message) return;
+    if (!password) {
+      showToast("삭제 비밀번호를 입력해주세요.");
+      return;
+    }
 
     const submitBtn = form.querySelector(".btn-submit");
     submitBtn.disabled = true;
 
     const { error } = await supabaseClient
       .from("guestbook_messages")
-      .insert({ name, message, tree_shape: selectedTreeShape });
+      .insert({ name, message, tree_shape: selectedTreeShape, password });
 
     submitBtn.disabled = false;
 
@@ -605,6 +673,7 @@ function formatDate(isoString) {
 function initStoryToggle() {
   const btn = document.getElementById("btnStoryToggle");
   const panel = document.getElementById("storyPanel");
+  const ffBtn = document.getElementById("btnStoryFastForward");
   if (!btn || !panel) return;
 
   btn.addEventListener("click", () => {
@@ -612,6 +681,8 @@ function initStoryToggle() {
     // 이미지가 많고 지연 로딩(loading="lazy")되는 콘텐츠라 scrollHeight가
     // 열 때마다 달라질 수 있어, 실제 높이 대신 충분히 큰 고정값을 사용
     panel.style.maxHeight = isOpen ? "20000px" : "0px";
+    // 빨리감기 버튼은 "우리들의 이야기"를 보는 동안에만 떠 있음
+    if (ffBtn) ffBtn.classList.toggle("is-visible", isOpen);
   });
 }
 
@@ -721,7 +792,14 @@ function initStoryTimeline() {
   const show = (el) => {
     if (el) el.classList.add("is-visible");
   };
-  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  /* 빨리감기 버튼을 누르면 true가 되고, 이후의 모든 대기 시간이
+     즉시 지나간 것처럼 처리됨 */
+  let ffActive = false;
+  const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ffActive ? 0 : ms));
+  /* 시간 기반 흐름(startInterviewChain)이 이미 시작됐는지 여부 -
+     스크롤로 자연스럽게 시작된 경우와 빨리감기 버튼으로 강제 시작한
+     경우가 겹쳐서 두 번 실행되는 것을 막기 위함 */
+  let interviewChainStarted = false;
 
   /* 요소가 스크롤로 화면에 들어오면 한 번만 콜백 실행
      (IntersectionObserver 미지원 브라우저는 그냥 바로 실행) */
@@ -792,7 +870,10 @@ function initStoryTimeline() {
               () =>
                 queueRowReveal(() => {
                   show(hello);
-                  startInterviewChain();
+                  if (!interviewChainStarted) {
+                    interviewChainStarted = true;
+                    startInterviewChain();
+                  }
                 }),
               { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.6 }
             );
@@ -891,6 +972,11 @@ function initStoryTimeline() {
         resolve();
         return;
       }
+      if (ffActive) {
+        el.textContent = full;
+        resolve();
+        return;
+      }
       let i = 0;
       const timer = setInterval(() => {
         i += 1;
@@ -947,6 +1033,43 @@ function initStoryTimeline() {
 
     show(document.getElementById("interviewBubbleRight2"));
     await wait(2000);
+  }
+
+  /* 빨리감기: 기다리지 않고 지금까지의(그리고 앞으로 나올) 모든 내용을
+     한 번에 보여줌. 이미 화면에 있는 .reveal 요소는 전부 즉시 보이게
+     하고, 시간 기반 흐름(안녕! 말풍선 이후)이 아직 시작 안 됐다면
+     지금 바로 시작함 - ffActive가 켜져 있어서 그 흐름 안의 모든 대기 시간은
+     실질적으로 0초로 지나감 */
+  function forceRevealAll() {
+    ffActive = true;
+
+    scroll.querySelectorAll(".reveal").forEach(show);
+    show(document.getElementById("bubbleHello"));
+
+    if (bubbleBest) {
+      show(bubbleBest);
+      if (bubbleBestLine1) bubbleBestLine1.textContent = BUBBLE_BEST_LINE1;
+      if (bubbleBestLine2) bubbleBestLine2.textContent = BUBBLE_BEST_LINE2;
+    }
+
+    if (!interviewChainStarted) {
+      interviewChainStarted = true;
+      startInterviewChain();
+    }
+
+    // 시간 기반 흐름이 방금 새로 열어놓은 요소들까지 한 번 더 확실히 보이게
+    // (setTimeout 체인이라 한 틱만에 다 끝나지 않을 수 있어 몇 번 더 확인)
+    [50, 200, 500].forEach((delay) => {
+      setTimeout(() => scroll.querySelectorAll(".reveal").forEach(show), delay);
+    });
+  }
+
+  const ffBtn = document.getElementById("btnStoryFastForward");
+  if (ffBtn) {
+    ffBtn.addEventListener("click", () => {
+      forceRevealAll();
+      showToast("전체 내용을 바로 보여드릴게요.");
+    });
   }
 
   function setupScrollReveal() {
@@ -1123,6 +1246,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTreeModal();
   initTreePickModal();
   initMessageForm();
+  initTreeDelete();
   initGardenCarousel();
   initRsvpToggle();
   initRsvpModal();
