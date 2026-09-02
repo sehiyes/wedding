@@ -266,7 +266,8 @@ function initTreeDelete() {
 
   confirmBtn.addEventListener("click", async () => {
     if (!requireSupabase() || !currentTreeMessage) return;
-    const pw = pwInput.value.trim();
+    // 숫자만 인정 (자동완성/키보드가 끼워넣을 수 있는 보이지 않는 문자 방지)
+    const pw = pwInput.value.replace(/\D/g, "");
     if (!pw) {
       showToast("삭제 비밀번호를 입력해주세요.");
       return;
@@ -279,7 +280,15 @@ function initTreeDelete() {
     });
     confirmBtn.disabled = false;
 
-    if (error || data !== true) {
+    /* 실제 서버/권한 오류와 "비밀번호가 그냥 틀림"을 구분해서 보여줌.
+       (이전엔 둘 다 같은 문구로 가려서, SQL 마이그레이션이 제대로
+       적용 안 된 경우에도 항상 "비밀번호가 틀렸다"고만 나왔었음) */
+    if (error) {
+      console.error(error);
+      showToast(`삭제 실패: ${error.message || "알 수 없는 오류"}`);
+      return;
+    }
+    if (data !== true) {
       showToast("비밀번호가 일치하지 않습니다.");
       return;
     }
@@ -355,7 +364,9 @@ function initMessageForm() {
 
     const name = document.getElementById("msgName").value.trim();
     const message = document.getElementById("msgText").value.trim();
-    const password = document.getElementById("msgPassword").value.trim();
+    // 숫자만 인정 (자동완성/키보드가 끼워넣을 수 있는 보이지 않는 문자 방지 -
+    // 삭제할 때 입력하는 값도 똑같이 숫자만 걸러서 비교하므로 이렇게 맞춰둠)
+    const password = document.getElementById("msgPassword").value.replace(/\D/g, "");
     if (!name || !message) return;
     if (!password) {
       showToast("삭제 비밀번호를 입력해주세요.");

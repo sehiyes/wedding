@@ -2409,24 +2409,26 @@ input:focus-visible,
    조정 이력(가로/세로 이동값, translate 기준):
    - 1차: Left/Right ±10px, Left2/Right2 (±10px, -10px)
    - 2차: Left/Right ±22px, Left2/Right2 (±22px, -18px)
-   - 3차(현재): Left/Right ±28px, Left2/Right2 (±28px, -20px)
+   - 3차: Left/Right ±28px, Left2/Right2 (±28px, -20px)
+   - 4차(현재): 전체 더 이동, "결혼 결심" 인터뷰(Left2/Right2)는 위쪽으로
+     과감하게 → Left/Right ±36px, Left2/Right2 (±34px, -50px)
    주의: 이 말풍선을 감싸는 상위 아코디언(.guide-panel)이 overflow:hidden
    이라, 여기서 값을 너무 크게 올리면 화면 밖으로 밀려나는 게 아니라
-   말풍선 일부가 아예 잘려서 안 보이게 됨. 그래서 한 번에 크게 올리기보다
-   단계적으로 올리는 중. */
+   말풍선 일부가 아예 잘려서 안 보이게 됨. 가로 방향은 그 한도 안에서
+   올렸고, 세로(위쪽) 방향은 패널 높이가 넉넉해서 과감하게 올림. */
 /* "Q. 처음봤던순간..." 인터뷰: 1번째(왼쪽) 살짝 우측, 2번째(오른쪽) 살짝 좌측 */
 #interviewBubbleLeft {
-  transform: translateX(28px);
+  transform: translateX(36px);
 }
 #interviewBubbleRight {
-  transform: translateX(-28px);
+  transform: translateX(-36px);
 }
-/* "그래서 결혼을..." 인터뷰: 1번째 우측+위쪽, 2번째 좌측+위쪽 */
+/* "그래서 결혼을...(결혼 결심)" 인터뷰: 위쪽으로 과감하게 이동 */
 #interviewBubbleLeft2 {
-  transform: translate(28px, -20px);
+  transform: translate(34px, -50px);
 }
 #interviewBubbleRight2 {
-  transform: translate(-28px, -20px);
+  transform: translate(-34px, -50px);
 }
 
 /* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
