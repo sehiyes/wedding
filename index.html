@@ -27,7 +27,9 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=8" />
+<link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-siugwiyeoweo.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+<noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-siugwiyeoweo.css" /></noscript>
+<link rel="stylesheet" href="css/style.css?v=9" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -669,6 +671,11 @@
   <div class="tree-modal">
     <button class="tree-modal-close" id="treeModalClose">✕</button>
     <div class="tree-modal-body" id="treeModalBody"></div>
+    <button type="button" class="tree-delete-btn" id="btnTreeDelete">나무 삭제하기</button>
+    <div class="tree-delete-form" id="treeDeleteForm">
+      <input type="password" id="treeDeletePassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="삭제 비밀번호 4자리" />
+      <button type="button" class="btn-submit" id="btnTreeDeleteConfirm">삭제</button>
+    </div>
   </div>
 </div>
 
@@ -700,6 +707,10 @@
         <div class="form-block">
           <label>축하 메시지</label>
           <textarea id="msgText" rows="3" maxlength="80"></textarea>
+        </div>
+        <div class="form-block">
+          <label>삭제 비밀번호 <span class="label-hint">(숫자 4자리, 나중에 삭제할 때 필요해요)</span></label>
+          <input type="password" id="msgPassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" />
         </div>
         <button type="submit" class="btn-submit">나무 심기</button>
       </form>
@@ -773,6 +784,7 @@
 
 <!-- 배경음악 -->
 <audio id="bgm" src="audio/wedding.mp3" loop preload="auto"></audio>
+<button class="story-ff-toggle" id="btnStoryFastForward" aria-label="우리들의 이야기 빨리감기">⏩ 빨리감기</button>
 <button class="music-toggle" id="btnMusicToggle" aria-label="배경음악 재생/정지">
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
     <path d="M9 18V5l12-2v13" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
