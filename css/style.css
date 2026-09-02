@@ -2305,11 +2305,11 @@ input:focus-visible,
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin: 6px 0 30px;
+  margin: 6px 0 34px;
 }
 .interview-bubble-wrap {
-  flex: 0 0 64%;
-  max-width: 270px;
+  flex: 0 0 62%;
+  max-width: 292px;
 }
 .interview-bubble-svg {
   width: 100%;
@@ -2320,18 +2320,18 @@ input:focus-visible,
 .interview-bubble-outline {
   fill: #ffffff;
   stroke: #2b2b2b;
-  stroke-width: 3.4;
+  stroke-width: 4;
   stroke-linejoin: round;
   stroke-linecap: round;
 }
 .interview-bubble-text {
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 30px;
   fill: var(--ink);
 }
 .interview-photo-small {
-  flex: 0 0 24%;
-  max-width: 92px;
+  flex: 0 0 30%;
+  max-width: 118px;
   height: auto;
   border-radius: 14px;
   object-fit: cover;
