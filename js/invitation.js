@@ -805,13 +805,14 @@ function initStoryTimeline() {
     await wait(1300);
 
     show(document.getElementById("interviewBubbleLeft"));
-    await wait(1700);
+    /* 글이 많아서 다 읽을 시간을 넉넉히 줌 */
+    await wait(3400);
 
     show(document.getElementById("timeline2024ImgAAgain"));
     await wait(1300);
 
     show(document.getElementById("interviewBubbleRight"));
-    await wait(1500);
+    await wait(3400);
 
     continueAfterLastRow();
   }
@@ -957,13 +958,13 @@ function initStoryTimeline() {
     await wait(1300);
 
     show(document.getElementById("interviewBubbleLeft2"));
-    await wait(1700);
+    await wait(2600);
 
     show(document.getElementById("timeline2024ImgAAgain2"));
     await wait(1300);
 
     show(document.getElementById("interviewBubbleRight2"));
-    await wait(1300);
+    await wait(2000);
   }
 
   /* 2024 시퀀스(캡션→뱃지→b사진→왼쪽말풍선→a사진→오른쪽말풍선)가
