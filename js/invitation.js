@@ -751,11 +751,11 @@ function initStoryTimeline() {
   function revealTimelineRowContent(row, isLast) {
     show(row);
     setTimeout(() => {
-      show(row.querySelector(".timeline-img--l"));
-      show(row.querySelector(".timeline-img--r"));
+      show(row.querySelector(".timeline-badge-img"));
     }, 400);
     setTimeout(() => {
-      show(row.querySelector(".timeline-badge-img"));
+      show(row.querySelector(".timeline-img--l"));
+      show(row.querySelector(".timeline-img--r"));
       if (isLast) {
         continueAfter2024Row();
       }
@@ -793,6 +793,9 @@ function initStoryTimeline() {
     await wait(1700);
 
     await playNightSequence();
+
+    /* 밤공원이 완전히 끝난 뒤에야 갤러리 스크롤 감지를 시작 */
+    setupGalleryReveal();
   }
 
   /* 밤 공원 4컷: 시작되면 스크롤과 상관없이 시간에 따라
@@ -931,39 +934,48 @@ function initStoryTimeline() {
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
 
-    /* 갤러리(밤공원 이후): 자막/사진 전부 각자 스크롤 속도에 맞게 독립적으로
-       나타남. 단, 두 번째 인터뷰 Q&A와 텐트+말풍선은 내부적으로
-       사진→말풍선 시간차가 있는 미니 시퀀스라 트리거만 스크롤로 함 */
+    /* 갤러리(밤공원 이후)는 밤공원 시퀀스가 완전히 끝난 뒤에야
+       스크롤 감지를 시작함 — setupGalleryReveal()에서 처리,
+       continueAfter2024Row() 안에서 playNightSequence() 다음에 호출됨 */
+  }
+
+  /* 갤러리(밤공원 이후): 자막/사진 전부 각자 스크롤 속도에 맞게 독립적으로
+     나타남. 단, 두 번째 인터뷰 Q&A와 텐트+말풍선은 내부적으로
+     사진→말풍선 시간차가 있는 미니 시퀀스라 트리거만 스크롤로 함.
+     밤공원이 끝나기 전에는 이 감지 자체가 시작되지 않으므로, 밤공원이
+     아직 재생 중일 때 스크롤이 갤러리 쪽까지 가있어도 "예상대로..."
+     같은 캡션이 먼저 떠버리는 일이 없음 */
+  function setupGalleryReveal() {
     const gallery = scroll.querySelector(".story-gallery");
-    if (gallery) {
-      Array.from(gallery.children).forEach((child) => {
-        if (child.id === "storySecondQCaption") {
-          revealOnScroll(child, () => playSecondInterviewQA(), {
-            root: null,
-            rootMargin: "0px 0px -12% 0px",
-            threshold: 0.2,
-          });
-          return;
-        }
+    if (!gallery) return;
 
-        if (child.classList.contains("story-panel-wrap")) {
-          revealOnScroll(child, () => playCampingScene(child), {
-            root: null,
-            rootMargin: "0px 0px -12% 0px",
-            threshold: 0.15,
-          });
-          return;
-        }
+    Array.from(gallery.children).forEach((child) => {
+      if (child.id === "storySecondQCaption") {
+        revealOnScroll(child, () => playSecondInterviewQA(), {
+          root: null,
+          rootMargin: "0px 0px -12% 0px",
+          threshold: 0.2,
+        });
+        return;
+      }
 
-        if (
-          (child.classList.contains("story-panel") &&
-            child.classList.contains("reveal")) ||
-          child.classList.contains("story-line")
-        ) {
-          revealOnScroll(child, () => show(child));
-        }
-      });
-    }
+      if (child.classList.contains("story-panel-wrap")) {
+        revealOnScroll(child, () => playCampingScene(child), {
+          root: null,
+          rootMargin: "0px 0px -12% 0px",
+          threshold: 0.15,
+        });
+        return;
+      }
+
+      if (
+        (child.classList.contains("story-panel") &&
+          child.classList.contains("reveal")) ||
+        child.classList.contains("story-line")
+      ) {
+        revealOnScroll(child, () => show(child));
+      }
+    });
   }
 
   /* 패널을 여는 순간 한 번만: 펼쳐지는 애니메이션이 끝난 뒤
