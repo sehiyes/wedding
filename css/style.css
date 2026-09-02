@@ -2300,25 +2300,21 @@ input:focus-visible,
   margin-top: 90px;
 }
 
-.interview-panel {
-  text-align: center;
-  margin: 4px 0 6px;
-}
-.interview-photo {
-  width: 62%;
-  max-width: 260px;
-  height: auto;
-  border-radius: 16px;
-  display: inline-block;
+.interview-turn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 30px;
 }
 .interview-bubble-wrap {
-  text-align: center;
-  margin: 0 0 34px;
+  flex: 0 0 64%;
+  max-width: 270px;
 }
 .interview-bubble-svg {
-  width: 82%;
-  max-width: 320px;
+  width: 100%;
   height: auto;
+  display: block;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.12));
 }
 .interview-bubble-outline {
@@ -2330,8 +2326,16 @@ input:focus-visible,
 }
 .interview-bubble-text {
   font-family: var(--font-body);
-  font-size: 19px;
+  font-size: 15px;
   fill: var(--ink);
+}
+.interview-photo-small {
+  flex: 0 0 24%;
+  max-width: 92px;
+  height: auto;
+  border-radius: 14px;
+  object-fit: cover;
+  align-self: center;
 }
 
 #storyFinalLine {
