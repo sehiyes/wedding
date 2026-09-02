@@ -2408,21 +2408,25 @@ input:focus-visible,
 /* ===== ONLY: 우리들의 이야기 인터뷰 말풍선 위치 미세 조정 =====
    조정 이력(가로/세로 이동값, translate 기준):
    - 1차: Left/Right ±10px, Left2/Right2 (±10px, -10px)
-   - 2차(현재): 위 방향으로 좀 더 이동 요청 → Left/Right ±22px,
-     Left2/Right2 (±22px, -18px) */
+   - 2차: Left/Right ±22px, Left2/Right2 (±22px, -18px)
+   - 3차(현재): Left/Right ±28px, Left2/Right2 (±28px, -20px)
+   주의: 이 말풍선을 감싸는 상위 아코디언(.guide-panel)이 overflow:hidden
+   이라, 여기서 값을 너무 크게 올리면 화면 밖으로 밀려나는 게 아니라
+   말풍선 일부가 아예 잘려서 안 보이게 됨. 그래서 한 번에 크게 올리기보다
+   단계적으로 올리는 중. */
 /* "Q. 처음봤던순간..." 인터뷰: 1번째(왼쪽) 살짝 우측, 2번째(오른쪽) 살짝 좌측 */
 #interviewBubbleLeft {
-  transform: translateX(33px);
+  transform: translateX(28px);
 }
 #interviewBubbleRight {
-  transform: translateX(-33px);
+  transform: translateX(-28px);
 }
 /* "그래서 결혼을..." 인터뷰: 1번째 우측+위쪽, 2번째 좌측+위쪽 */
 #interviewBubbleLeft2 {
-  transform: translate(33px, -30px);
+  transform: translate(28px, -20px);
 }
 #interviewBubbleRight2 {
-  transform: translate(-33px, -30px);
+  transform: translate(-28px, -20px);
 }
 
 /* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
@@ -2456,7 +2460,7 @@ input:focus-visible,
   border-radius: 10px;
   padding: 9px 12px;
   font-family: var(--font-body);
-  font-size: 0.9375rem;
+  font-size: 1rem;
 }
 .tree-delete-form button {
   flex: 0 0 auto;
@@ -2490,4 +2494,18 @@ input:focus-visible,
 }
 .story-ff-toggle.is-visible {
   display: flex;
+}
+
+/* ===== ONLY: 방명록/삭제 비밀번호 입력칸 (4자리 숫자 PIN)
+   - type="password"였을 때 Safari가 "다른 강력한 암호 사용" 자동완성을
+     끼워넣어서 실제로 입력한 숫자와 다른 값이 등록되는 문제가 있었음.
+     그래서 type="tel"로 바꾸고, 화면에는 -webkit-text-security로
+     점(●)만 보이게 해서 시각적으로는 기존과 동일하게 가림.
+   - 글자 크기를 16px 이상으로 둬서, iOS Safari가 입력창에 포커스될 때
+     자동으로 화면을 확대해버리는 것도 함께 방지함. ===== */
+.pin-input {
+  font-size: 16px;
+  letter-spacing: 4px;
+  -webkit-text-security: disc;
+  text-security: disc;
 }

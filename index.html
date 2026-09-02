@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <title>최종윤 ♥ 임세희 결혼합니다 💍</title>
 <meta name="description" content="쫑파와 세이의 결혼식에 소중한 당신을 초대합니다." />
 
@@ -27,7 +27,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=10" />
+<link rel="stylesheet" href="css/style.css?v=12" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -671,7 +671,7 @@
     <div class="tree-modal-body" id="treeModalBody"></div>
     <button type="button" class="tree-delete-btn" id="btnTreeDelete">나무 삭제하기</button>
     <div class="tree-delete-form" id="treeDeleteForm">
-      <input type="password" id="treeDeletePassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="삭제 비밀번호 4자리" />
+      <input type="tel" id="treeDeletePassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" class="pin-input" placeholder="삭제 비밀번호 4자리" />
       <button type="button" class="btn-submit" id="btnTreeDeleteConfirm">삭제</button>
     </div>
   </div>
@@ -708,7 +708,7 @@
         </div>
         <div class="form-block">
           <label>삭제 비밀번호 <span class="label-hint">(숫자 4자리, 나중에 삭제할 때 필요해요)</span></label>
-          <input type="password" id="msgPassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" />
+          <input type="tel" id="msgPassword" maxlength="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" class="pin-input" />
         </div>
         <button type="submit" class="btn-submit">나무 심기</button>
       </form>
