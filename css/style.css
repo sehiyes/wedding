@@ -2516,7 +2516,13 @@ input:focus-visible,
 }
 
 /* ===== ONLY: "결혼 결심" 인터뷰 말풍선(#interviewBubbleLeft2) 위쪽 4줄만
-   글씨 크기 1포인트(약 1.33px) 축소: 34px -> 32.7px ===== */
+   글씨 크기 축소: 34px -> 32.7px(1pt) -> 31.4px(1pt 추가) ===== */
 .ib-text-sm {
-  font-size: 32.7px;
+  font-size: 31.4px;
+}
+
+/* ===== ONLY: 2024년 뱃지("그리고 2024년..." 자막 다음)만 등장 속도를
+   조금 느리게 (기존 공통 .reveal 0.7s -> 1.3s) ===== */
+#badge2024.reveal {
+  transition-duration: 1.3s;
 }
