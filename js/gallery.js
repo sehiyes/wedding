@@ -10,6 +10,11 @@ let lightboxIndex = 0;
 async function renderGallery() {
   const grid = document.getElementById("galleryGrid");
   if (!grid) return;
+  /* 지금은 실제 사진 대신 "촬영 예정입니다" 안내문구(prep-section)로
+     대체돼있는 상태(display:none) — 그런데도 12장 × 확장자 8종류를
+     전부 하나하나 요청해보고 있어서(최대 96개) 404가 잔뜩 쌓이고
+     로딩이 느려지는 원인이 되고 있었음. 숨겨진 동안은 아예 건너뜀 */
+  if (grid.style.display === "none") return;
 
   const candidates = [];
   for (let i = 1; i <= GALLERY_IMAGES_COUNT; i++) {
