@@ -745,47 +745,33 @@ function initStoryTimeline() {
   }
 
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
-     뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
-     2024(마지막) 줄은 훨씬 더 긴 전용 시퀀스(play2024Sequence)로 대체됨 */
-  function revealTimelineRowContent(row) {
+     좌/우 사진이 먼저 뜨고, 한 템포 쉬었다가 연도 뱃지가 나타남.
+     2024(마지막) 줄은 뱃지가 뜬 뒤 이어서 안녕!→인터뷰→밤공원까지
+     이어지는 전용 시간 기반 흐름(continueAfter2024Row)을 시작함 */
+  function revealTimelineRowContent(row, isLast) {
     show(row);
-    /* 좌/우 사진이 먼저 뜨고, 한 템포 쉬었다가 연도 뱃지가 나타남 */
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
     }, 400);
     setTimeout(() => {
       show(row.querySelector(".timeline-badge-img"));
+      if (isLast) {
+        continueAfter2024Row();
+      }
     }, 2000);
   }
 
   function revealTimelineRow(row, isLast) {
-    if (isLast) {
-      play2024Sequence();
-      return;
-    }
-    revealTimelineRowContent(row);
+    revealTimelineRowContent(row, isLast);
   }
 
-  /* 2024 시퀀스:
-     자막 → 2024-a/b 사진 동시에 → (한 템포 쉬고) 뱃지 → 안녕! 말풍선
-     → (간격 넓게 띄운 뒤) "Q. 처음 봤던 순간, 기억하시나요?"
-     → 여자 인터뷰 사진 → 여자 말풍선
-     → 남자 인터뷰 사진 → 남자 말풍선
-     → 이후 원래 흐름(만남+소중한 문장 → 밤 공원 → 갤러리)으로 이어짐 */
-  async function play2024Sequence() {
-    show(document.getElementById("timeline2024Caption"));
-    await wait(1100);
-
-    show(document.getElementById("timeline2024ImgA"));
-    show(document.getElementById("timeline2024ImgB"));
-    await wait(2000);
-
-    show(document.getElementById("badge2024"));
-    await wait(900);
-
+  /* 2024 뱃지가 뜬 뒤부터는 스크롤과 상관없이 시간 기반으로 이어짐:
+     안녕! 말풍선 → "Q. 처음 봤던 순간..." → 인터뷰 두 사람 →
+     만남+소중한 문장 → 밤 공원. 밤공원 이후(갤러리)는 다시
+     각자 스크롤에 맞춰 독립적으로 나타남 */
+  async function continueAfter2024Row() {
     show(document.getElementById("bubbleHello"));
-    /* "안녕!" 말풍선과 인터뷰 구간 사이 간격을 넉넉하게 */
     await wait(1800);
 
     show(document.getElementById("timeline2024QCaption"));
@@ -795,7 +781,6 @@ function initStoryTimeline() {
     await wait(1300);
 
     show(document.getElementById("interviewBubbleLeft"));
-    /* 글이 많아서 다 읽을 시간을 넉넉히 줌 */
     await wait(3400);
 
     show(document.getElementById("timeline2024ImgAAgain"));
@@ -804,20 +789,10 @@ function initStoryTimeline() {
     show(document.getElementById("interviewBubbleRight"));
     await wait(3400);
 
-    continueAfterLastRow();
-  }
+    show(document.getElementById("storyMeetLine"));
+    await wait(1700);
 
-  /* 스크롤을 빨리 내려서 여러 줄이 한꺼번에 뷰포트에 걸려도,
-     한 줄씩 최소 간격을 두고 순서대로 나타나게 줄을 세움 */
-  let rowRevealQueue = Promise.resolve();
-  function queueTimelineRow(row, isLast) {
-    rowRevealQueue = rowRevealQueue.then(
-      () =>
-        new Promise((resolve) => {
-          revealTimelineRow(row, isLast);
-          setTimeout(resolve, 2300);
-        })
-    );
+    await playNightSequence();
   }
 
   /* 밤 공원 4컷: 시작되면 스크롤과 상관없이 시간에 따라
@@ -893,47 +868,17 @@ function initStoryTimeline() {
     if (bubbleBestLine2) bubbleBestLine2.textContent = BUBBLE_BEST_LINE2;
   }
 
-  /* 갤러리 체인: 사진 → 자막이 다 뜨면 → 다음 사진 → ... 순서로 이어지다가,
-     "이제는 같은 길을..." → 텐트 사진 → 말풍선(전부 타이핑) →
-     마지막 "2027.04.18 / 저희 결혼합니다!" 순서로 나타남
-     (전부 gallery의 자식 순서 그대로, 이 반복문 하나로 처리됨) */
-  async function playGalleryChain(gallery) {
-    const children = Array.from(gallery.children);
+  /* 텐트 사진(마지막 갤러리 사진)은 스크롤로 뜨고, 짧은 텀을 두고
+     말풍선(전부 타이핑)이 이어서 뜸 */
+  async function playCampingScene(wrap) {
+    const tentImg = wrap.querySelector(".story-panel.reveal");
+    show(tentImg);
+    await wait(500);
 
-    for (const child of children) {
-      if (child.id === "storySecondQCaption") {
-        await playSecondInterviewQA();
-        continue;
-      }
-
-      if (
-        child.classList.contains("story-panel") &&
-        child.classList.contains("reveal")
-      ) {
-        show(child);
-        await wait(1900);
-        continue;
-      }
-
-      if (child.classList.contains("story-line")) {
-        show(child);
-        await wait(1900);
-        continue;
-      }
-
-      if (child.classList.contains("story-panel-wrap")) {
-        const tentImg = child.querySelector(".story-panel.reveal");
-        show(tentImg);
-        await wait(1300);
-
-        if (bubbleBest) {
-          show(bubbleBest);
-          await wait(250);
-          await typeBubbleBestAll();
-          await wait(800);
-        }
-        continue;
-      }
+    if (bubbleBest) {
+      show(bubbleBest);
+      await wait(250);
+      await typeBubbleBestAll();
     }
   }
 
@@ -957,50 +902,68 @@ function initStoryTimeline() {
     await wait(2000);
   }
 
-  /* 2024 시퀀스(캡션→뱃지→b사진→왼쪽말풍선→a사진→오른쪽말풍선)가
-     다 끝난 뒤부터는 스크롤과 상관없이 하나의 흐름으로 끝까지 이어짐:
-     만남 문장 → 밤 공원 4컷 → 소중한 문장 → 갤러리(사진/문장/
-     텐트/말풍선) → 마지막 문장 */
-  async function continueAfterLastRow() {
-    show(document.getElementById("storyMeetLine"));
-
-    /* "다행이도(?)... 소중한 사람이 되었습니다" 문장을 다 읽을 시간을
-       준 뒤에 밤 공원 시작 (요청대로 0.2초 더 여유 있게) */
-    await wait(1700);
-    await playNightSequence();
-
-    await wait(300);
-    const gallery = scroll.querySelector(".story-gallery");
-    if (gallery) {
-      await playGalleryChain(gallery);
-    }
-  }
-
   function setupScrollReveal() {
+    /* 연도 타임라인 줄들: 전부 각자 스크롤로 들어오면 독립적으로 시작
+       (대기열 없이, 스크롤 속도에 맞게). 2024(마지막) 줄만 뱃지가 뜬
+       뒤 시간 기반 흐름(continueAfter2024Row)으로 이어짐 */
     const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
     rows.forEach((row, idx) => {
       const isLast = idx === rows.length - 1;
-      /* 모든 줄(2024 포함)을 대기열에 태워서, 앞 줄들이 다 뜨기 전에
-         2024 자막이 먼저 뜨는 순서 오류가 생기지 않게 함 */
-      revealOnScroll(
-        row,
-        () => queueTimelineRow(row, isLast),
-        { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.25 }
-      );
+      revealOnScroll(row, () => revealTimelineRow(row, isLast), {
+        root: null,
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.25,
+      });
     });
 
+    /* "그리고 2024년..." 자막은 별도로 독립 스크롤 트리거 */
+    revealOnScroll(document.getElementById("timeline2024Caption"), () =>
+      show(document.getElementById("timeline2024Caption"))
+    );
+
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
-       - "Q. 처음 봤던 순간..."(#timeline2024QCaption): play2024Sequence 안에서
-       - "운동하는 곳에서..."(#storyMeetLine): 2024 줄 → 안녕! 말풍선 뒤
-       - "이제는 같은 길을..."(#storyFinalLine)은 이제 .story-gallery 안으로
-         옮겨져서 갤러리 체인에서 순서대로 처리되므로 이 선택자와는 무관
-       전부 continueAfterLastRow() 체인 안에서 순서대로 직접 띄우므로
-       여기서는 제외하고, 밤공원/갤러리도 더 이상 독립적으로 스크롤
-       트리거하지 않음 (그 앞 문장이 뜨기 전에 먼저 재생되던 문제 방지) */
+       - "Q. 처음 봤던 순간..."(#timeline2024QCaption)
+       - "운동하는 곳에서..."(#storyMeetLine)
+       이 둘은 2024 줄 → 안녕! → 인터뷰로 이어지는 continueAfter2024Row()
+       시간 기반 흐름 안에서 직접 띄우므로 여기서는 제외 */
     const topLevelLines = scroll.querySelectorAll(
       ".story-scroll > .story-line:not(#timeline2024QCaption):not(#storyMeetLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
+
+    /* 갤러리(밤공원 이후): 자막/사진 전부 각자 스크롤 속도에 맞게 독립적으로
+       나타남. 단, 두 번째 인터뷰 Q&A와 텐트+말풍선은 내부적으로
+       사진→말풍선 시간차가 있는 미니 시퀀스라 트리거만 스크롤로 함 */
+    const gallery = scroll.querySelector(".story-gallery");
+    if (gallery) {
+      Array.from(gallery.children).forEach((child) => {
+        if (child.id === "storySecondQCaption") {
+          revealOnScroll(child, () => playSecondInterviewQA(), {
+            root: null,
+            rootMargin: "0px 0px -12% 0px",
+            threshold: 0.2,
+          });
+          return;
+        }
+
+        if (child.classList.contains("story-panel-wrap")) {
+          revealOnScroll(child, () => playCampingScene(child), {
+            root: null,
+            rootMargin: "0px 0px -12% 0px",
+            threshold: 0.15,
+          });
+          return;
+        }
+
+        if (
+          (child.classList.contains("story-panel") &&
+            child.classList.contains("reveal")) ||
+          child.classList.contains("story-line")
+        ) {
+          revealOnScroll(child, () => show(child));
+        }
+      });
+    }
   }
 
   /* 패널을 여는 순간 한 번만: 펼쳐지는 애니메이션이 끝난 뒤
