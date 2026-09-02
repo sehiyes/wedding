@@ -747,19 +747,16 @@ function initStoryTimeline() {
   /* 타임라인 한 줄(연도 뱃지 + 좌우 사진): 화면에 들어오면
      뱃지가 뜸을 들였다가, 그 뒤 좌/우 사진이 나타남.
      2024(마지막) 줄은 훨씬 더 긴 전용 시퀀스(play2024Sequence)로 대체됨 */
-  function revealTimelineRowContent(row, isLast) {
+  function revealTimelineRowContent(row) {
     show(row);
-    setTimeout(() => {
-      show(row.querySelector(".timeline-badge-img"));
-    }, 500);
+    /* 좌/우 사진이 먼저 뜨고, 한 템포 쉬었다가 연도 뱃지가 나타남 */
     setTimeout(() => {
       show(row.querySelector(".timeline-img--l"));
       show(row.querySelector(".timeline-img--r"));
-
-      if (isLast) {
-        continueAfterLastRow();
-      }
-    }, 1300);
+    }, 400);
+    setTimeout(() => {
+      show(row.querySelector(".timeline-badge-img"));
+    }, 2000);
   }
 
   function revealTimelineRow(row, isLast) {
@@ -767,18 +764,11 @@ function initStoryTimeline() {
       play2024Sequence();
       return;
     }
-    revealTimelineRowContent(row, false);
+    revealTimelineRowContent(row);
   }
 
-  /* 2024 전용 시퀀스:
-     "그리고 2024년, 같은 곳에서 처음 마주쳤습니다." 자막
-     → 2024 뱃지 → 2024-a/b 사진 동시에(다른 연도들처럼) → 안녕! 말풍선
-     → (다시) 2024-b 사진(오른쪽, 왼쪽은 빈 공간) → 왼쪽 말풍선(잘라낸 이미지)
-     → [스크롤해야 다음이 나타남] (다시) 2024-a 사진(왼쪽, 오른쪽은 빈 공간)
-     → 오른쪽 말풍선(잘라낸 이미지)
-     → 이후 원래 흐름(만남 문장 → 밤 공원 → 갤러리)으로 이어짐 */
   /* 2024 시퀀스:
-     자막 → 뱃지 → 2024-a/b 동시에 → 안녕! 말풍선
+     자막 → 2024-a/b 사진 동시에 → (한 템포 쉬고) 뱃지 → 안녕! 말풍선
      → (간격 넓게 띄운 뒤) "Q. 처음 봤던 순간, 기억하시나요?"
      → 여자 인터뷰 사진 → 여자 말풍선
      → 남자 인터뷰 사진 → 남자 말풍선
@@ -787,12 +777,12 @@ function initStoryTimeline() {
     show(document.getElementById("timeline2024Caption"));
     await wait(1100);
 
-    show(document.getElementById("badge2024"));
-    await wait(900);
-
     show(document.getElementById("timeline2024ImgA"));
     show(document.getElementById("timeline2024ImgB"));
-    await wait(950);
+    await wait(2000);
+
+    show(document.getElementById("badge2024"));
+    await wait(900);
 
     show(document.getElementById("bubbleHello"));
     /* "안녕!" 말풍선과 인터뷰 구간 사이 간격을 넉넉하게 */
@@ -825,7 +815,7 @@ function initStoryTimeline() {
       () =>
         new Promise((resolve) => {
           revealTimelineRow(row, isLast);
-          setTimeout(resolve, 1300);
+          setTimeout(resolve, 2300);
         })
     );
   }
@@ -921,13 +911,13 @@ function initStoryTimeline() {
         child.classList.contains("reveal")
       ) {
         show(child);
-        await wait(1300);
+        await wait(1900);
         continue;
       }
 
       if (child.classList.contains("story-line")) {
         show(child);
-        await wait(1300);
+        await wait(1900);
         continue;
       }
 
