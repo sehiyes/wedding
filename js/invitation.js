@@ -990,6 +990,7 @@ function initStoryTimeline() {
     if (!gallery) return;
 
     const campingWrap = gallery.querySelector(".story-panel-wrap");
+    const dateLine = document.getElementById("storyWeddingDateLine");
 
     Array.from(gallery.children).forEach((child) => {
       if (child.id === "storySecondQCaption") {
@@ -1002,11 +1003,19 @@ function initStoryTimeline() {
                  감지 자체가 없어서, 스크롤이 이미 그 아래까지 가있어도
                  남자 말풍선보다 먼저 뜨는 일이 없음 */
               if (campingWrap) {
-                revealOnScroll(campingWrap, () => playCampingScene(campingWrap), {
-                  root: null,
-                  rootMargin: "0px 0px -12% 0px",
-                  threshold: 0.15,
-                });
+                revealOnScroll(
+                  campingWrap,
+                  () => {
+                    playCampingScene(campingWrap).then(() => {
+                      /* 마찬가지로, 텐트+말풍선이 다 끝난 뒤에야
+                         마지막 "2027.04.18..." 문구의 감지를 시작 */
+                      if (dateLine) {
+                        revealOnScroll(dateLine, () => show(dateLine));
+                      }
+                    });
+                  },
+                  { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.15 }
+                );
               }
             });
           },
@@ -1015,8 +1024,11 @@ function initStoryTimeline() {
         return;
       }
 
-      if (child.classList.contains("story-panel-wrap")) {
-        /* 위에서 storySecondQCaption 완료 후 별도로 감지를 걸므로 제외 */
+      if (
+        child.classList.contains("story-panel-wrap") ||
+        child.id === "storyWeddingDateLine"
+      ) {
+        /* 위에서 storySecondQCaption 완료 후 순서대로 감지를 걸므로 제외 */
         return;
       }
 
