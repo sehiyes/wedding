@@ -797,6 +797,7 @@ input:focus-visible,
 }
 .form-block input[type="text"],
 .form-block input[type="tel"],
+.form-block input[type="password"],
 .form-block textarea {
   width: 100%;
   border: none;
@@ -810,6 +811,7 @@ input:focus-visible,
 }
 .form-block input[type="text"]:focus,
 .form-block input[type="tel"]:focus,
+.form-block input[type="password"]:focus,
 .form-block textarea:focus {
   border-bottom: 1px solid var(--ink);
 }
@@ -1729,6 +1731,7 @@ input:focus-visible,
 
 .form-block input[type="text"]:focus,
 .form-block input[type="tel"]:focus,
+.form-block input[type="password"]:focus,
 .form-block textarea:focus {
   border-bottom-color: #879b7a !important;
 }
@@ -2375,7 +2378,16 @@ input:focus-visible,
 
 
 /* ===== ONLY: 나무심기 방명록에 적용하는 손글씨 폰트
-   (작성된 이름/메시지에만 적용, "나무 심기" 버튼 등 UI 문구는 대상 아님) ===== */
+   (작성된 이름/메시지에만 적용, "나무 심기" 버튼 등 UI 문구는 대상 아님)
+   - 이전에는 fontzip.co.kr 외부 스타일시트 링크에 의존했는데, PC에서
+     그 파일이 제대로 로드되지 않아 글꼴이 적용 안 되는 문제가 있었음.
+     그래서 실제 폰트 파일을 직접 @font-face로 가져와 훨씬 안정적으로 만듦. */
+@font-face {
+  font-family: "나눔손글씨 시우 귀여워";
+  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/naverfont_02@1.0/Cut_siu.woff") format("woff");
+  font-weight: 400;
+  font-display: swap;
+}
 .fontzip-nanum-siugwiyeoweo {
   font-family: "나눔손글씨 시우 귀여워", sans-serif;
   font-weight: 400;
@@ -2393,20 +2405,24 @@ input:focus-visible,
   padding: 30px 16px;
 }
 
-/* ===== ONLY: 우리들의 이야기 인터뷰 말풍선 위치 미세 조정 ===== */
+/* ===== ONLY: 우리들의 이야기 인터뷰 말풍선 위치 미세 조정 =====
+   조정 이력(가로/세로 이동값, translate 기준):
+   - 1차: Left/Right ±10px, Left2/Right2 (±10px, -10px)
+   - 2차(현재): 위 방향으로 좀 더 이동 요청 → Left/Right ±22px,
+     Left2/Right2 (±22px, -18px) */
 /* "Q. 처음봤던순간..." 인터뷰: 1번째(왼쪽) 살짝 우측, 2번째(오른쪽) 살짝 좌측 */
 #interviewBubbleLeft {
-  transform: translateX(10px);
+  transform: translateX(22px);
 }
 #interviewBubbleRight {
-  transform: translateX(-10px);
+  transform: translateX(-22px);
 }
 /* "그래서 결혼을..." 인터뷰: 1번째 우측+위쪽, 2번째 좌측+위쪽 */
 #interviewBubbleLeft2 {
-  transform: translate(10px, -10px);
+  transform: translate(22px, -18px);
 }
 #interviewBubbleRight2 {
-  transform: translate(-10px, -10px);
+  transform: translate(-22px, -18px);
 }
 
 /* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
@@ -2433,8 +2449,9 @@ input:focus-visible,
   display: flex;
 }
 .tree-delete-form input {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
+  width: auto;
   border: 1px solid var(--line-soft);
   border-radius: 10px;
   padding: 9px 12px;
@@ -2443,6 +2460,8 @@ input:focus-visible,
 }
 .tree-delete-form button {
   flex: 0 0 auto;
+  width: auto;
+  margin-top: 0;
   padding: 9px 14px;
   font-size: 0.875rem;
 }
