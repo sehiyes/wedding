@@ -784,10 +784,18 @@ function initStoryTimeline() {
           show(row.querySelector(".timeline-img--r"));
           if (isLast) {
             const hello = document.getElementById("bubbleHello");
-            revealOnScroll(hello, () => {
-              show(hello);
-              startInterviewChain();
-            });
+            /* 사진이 뜬 순간 이미 화면에 들어와 있어서 동시에 떠버리는
+               것을 막기 위해, 뱃지/사진과 같은 대기열에 태워 최소
+               간격(350ms)을 두고 뜨게 함 */
+            revealOnScroll(
+              hello,
+              () =>
+                queueRowReveal(() => {
+                  show(hello);
+                  startInterviewChain();
+                }),
+              { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.6 }
+            );
           }
         }),
       { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.55 }
@@ -809,6 +817,7 @@ function initStoryTimeline() {
      만남+소중한 문장 → 밤 공원. 밤공원 이후(갤러리)는 다시
      각자 스크롤에 맞춰 독립적으로 나타남 */
   async function startInterviewChain() {
+    await wait(1000);
     await typeLineCaption(document.getElementById("timeline2024QCaption"), 55);
     await wait(600);
 
@@ -980,22 +989,34 @@ function initStoryTimeline() {
     const gallery = scroll.querySelector(".story-gallery");
     if (!gallery) return;
 
+    const campingWrap = gallery.querySelector(".story-panel-wrap");
+
     Array.from(gallery.children).forEach((child) => {
       if (child.id === "storySecondQCaption") {
-        revealOnScroll(child, () => playSecondInterviewQA(), {
-          root: null,
-          rootMargin: "0px 0px -12% 0px",
-          threshold: 0.2,
-        });
+        revealOnScroll(
+          child,
+          () => {
+            playSecondInterviewQA().then(() => {
+              /* 두 번째 인터뷰(여자→말풍선→남자→말풍선)가 완전히 끝난
+                 뒤에야 텐트(캠핑) 사진의 스크롤 감지를 시작함 — 그 전엔
+                 감지 자체가 없어서, 스크롤이 이미 그 아래까지 가있어도
+                 남자 말풍선보다 먼저 뜨는 일이 없음 */
+              if (campingWrap) {
+                revealOnScroll(campingWrap, () => playCampingScene(campingWrap), {
+                  root: null,
+                  rootMargin: "0px 0px -12% 0px",
+                  threshold: 0.15,
+                });
+              }
+            });
+          },
+          { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.2 }
+        );
         return;
       }
 
       if (child.classList.contains("story-panel-wrap")) {
-        revealOnScroll(child, () => playCampingScene(child), {
-          root: null,
-          rootMargin: "0px 0px -12% 0px",
-          threshold: 0.15,
-        });
+        /* 위에서 storySecondQCaption 완료 후 별도로 감지를 걸므로 제외 */
         return;
       }
 
