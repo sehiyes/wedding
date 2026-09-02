@@ -20,6 +20,10 @@ create table if not exists guestbook_messages (
 -- 아래 한 줄만 추가로 실행하면 기존 데이터는 그대로 두고 컬럼만 안전하게 추가됩니다.
 alter table guestbook_messages add column if not exists tree_shape int not null default 0;
 
+-- 방명록 삭제 기능용 비밀번호 컬럼(해시로 저장됨). 예전에 남겨진 메시지는
+-- 이 값이 비어있어서 삭제할 수 없습니다(원 작성자를 특정할 방법이 없기 때문).
+alter table guestbook_messages add column if not exists password text;
+
 alter table guestbook_messages enable row level security;
 
 create policy "guestbook public insert"
@@ -36,6 +40,56 @@ create policy "guestbook public select"
 -- 이 GRANT가 없으면 "permission denied for table ..." (42501) 오류가 납니다.
 grant usage on schema public to anon;
 grant select, insert on guestbook_messages to anon;
+
+-- 방명록 비밀번호는 저장 시 절대 평문 그대로 두지 않고, 아래 트리거가
+-- INSERT 되는 순간 자동으로 해시로 바꿔서 저장합니다(관리자도 원문을 볼 수 없음).
+create or replace function hash_guestbook_password()
+returns trigger
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  if new.password is not null and new.password <> '' then
+    new.password := crypt(new.password, gen_salt('bf'));
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists trg_hash_guestbook_password on guestbook_messages;
+create trigger trg_hash_guestbook_password
+  before insert on guestbook_messages
+  for each row execute function hash_guestbook_password();
+
+-- 방명록 삭제: 프론트엔드는 이 함수만 호출하고, 비밀번호 비교는 서버 안에서만
+-- 이루어집니다. 비밀번호가 맞을 때만 실제로 삭제하고 true를 반환합니다.
+-- (비밀번호 없이 등록된 예전 메시지는 password가 null이라 삭제 불가)
+create or replace function delete_guestbook_message(input_id bigint, input_password text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+declare
+  stored_password text;
+begin
+  select password into stored_password from guestbook_messages where id = input_id;
+
+  if stored_password is null then
+    return false;
+  end if;
+
+  if stored_password = crypt(input_password, stored_password) then
+    delete from guestbook_messages where id = input_id;
+    return true;
+  else
+    return false;
+  end if;
+end;
+$$;
+
+grant execute on function delete_guestbook_message(bigint, text) to anon;
 
 -- ---------------------------------------------------------
 -- 2. 참석 여부(RSVP) 테이블 - 누구나 "쓰기"만 가능, "조회"는 불가
