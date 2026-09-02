@@ -2232,6 +2232,14 @@ input:focus-visible,
   display: block;
   margin: 22px 0;
 }
+/* 스크롤에 맞춰 독립적으로 나타나는 갤러리 구간(자막→사진→자막→사진...)
+   간격을 더 넓게 둬서, 다음 것이 뜨기까지 충분히 스크롤하게 함 */
+.story-gallery .story-line {
+  margin: 54px 0;
+}
+.story-gallery .story-panel {
+  margin: 46px 0;
+}
 
 .story-panel-wrap {
   position: relative;
