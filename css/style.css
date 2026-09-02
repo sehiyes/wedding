@@ -1401,7 +1401,7 @@ input:focus-visible,
 .music-toggle {
   position: fixed;
   right: 18px;
-  bottom: 18px;
+  top: 18px;
   width: 48px;
   height: 48px;
   border-radius: 50%;
@@ -2373,3 +2373,102 @@ input:focus-visible,
   transition: opacity 0.6s ease;
 }
 
+
+/* ===== ONLY: 나무심기 방명록에 적용하는 손글씨 폰트
+   (작성된 이름/메시지에만 적용, "나무 심기" 버튼 등 UI 문구는 대상 아님) ===== */
+.fontzip-nanum-siugwiyeoweo {
+  font-family: "나눔손글씨 시우 귀여워", sans-serif;
+  font-weight: 400;
+}
+
+/* ===== ONLY: 방명록이 비어있을 때 안내 문구 줄바꿈 수정
+   .tree-track이 캐러셀 중앙 정렬을 위해 좌우 44%씩 padding을 갖고 있어서,
+   비어있을 때 안내 문구가 전체 폭의 12%만 쓸 수 있어 줄바꿈이 과하게 됐음.
+   이 문구만 그 padding을 상쇄해서 폭을 넓게 씀. ===== */
+.tree-track .message-empty {
+  flex: 1 1 auto;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 -44%;
+  padding: 30px 16px;
+}
+
+/* ===== ONLY: 우리들의 이야기 인터뷰 말풍선 위치 미세 조정 ===== */
+/* "Q. 처음봤던순간..." 인터뷰: 1번째(왼쪽) 살짝 우측, 2번째(오른쪽) 살짝 좌측 */
+#interviewBubbleLeft {
+  transform: translateX(10px);
+}
+#interviewBubbleRight {
+  transform: translateX(-10px);
+}
+/* "그래서 결혼을..." 인터뷰: 1번째 우측+위쪽, 2번째 좌측+위쪽 */
+#interviewBubbleLeft2 {
+  transform: translate(10px, -10px);
+}
+#interviewBubbleRight2 {
+  transform: translate(-10px, -10px);
+}
+
+/* ===== ONLY: 나무 메시지 팝업 - 삭제 버튼/폼 ===== */
+.tree-delete-btn {
+  display: block;
+  margin: 4px auto 0;
+  border: none;
+  background: transparent;
+  color: var(--ink-faint);
+  font-size: 0.8125rem;
+  text-decoration: underline;
+  padding: 6px 4px;
+}
+.tree-delete-btn:hover {
+  color: var(--ink);
+}
+.tree-delete-form {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+.tree-delete-form.is-open {
+  display: flex;
+}
+.tree-delete-form input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  padding: 9px 12px;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+}
+.tree-delete-form button {
+  flex: 0 0 auto;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+}
+
+/* ===== ONLY: 우리들의 이야기 빨리감기 버튼
+   (음악 버튼과 자리가 겹치지 않게 반대쪽에 두고, position:fixed라
+   스크롤을 내려도 화면에 계속 떠 있음. 이야기 패널이 열려있을 때만 보임) ===== */
+.story-ff-toggle {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  z-index: 60;
+  display: none;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--ivory);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+  opacity: 0.9;
+}
+.story-ff-toggle.is-visible {
+  display: flex;
+}
