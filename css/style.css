@@ -2296,8 +2296,11 @@ input:focus-visible,
 }
 
 /* "안녕!" 말풍선과 인터뷰 구간 사이 간격을 넉넉하게 */
-#timeline2024QCaption {
+#timeline2024QCaption,
+#storySecondQCaption {
   margin-top: 90px;
+  font-family: var(--font-title);
+  font-weight: 700;
 }
 
 .interview-turn {
@@ -2308,8 +2311,8 @@ input:focus-visible,
   margin: 6px 0 34px;
 }
 .interview-bubble-wrap {
-  flex: 0 0 62%;
-  max-width: 292px;
+  flex: 0 0 68%;
+  max-width: 310px;
 }
 .interview-bubble-svg {
   width: 100%;
@@ -2325,13 +2328,14 @@ input:focus-visible,
   stroke-linecap: round;
 }
 .interview-bubble-text {
-  font-family: var(--font-body);
-  font-size: 30px;
+  font-family: var(--font-title);
+  font-weight: 700;
+  font-size: 34px;
   fill: var(--ink);
 }
 .interview-photo-small {
-  flex: 0 0 30%;
-  max-width: 118px;
+  flex: 0 0 24%;
+  max-width: 100px;
   height: auto;
   border-radius: 14px;
   object-fit: cover;
