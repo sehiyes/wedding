@@ -772,10 +772,9 @@ function initStoryTimeline() {
 
   /* 2024 전용 시퀀스:
      "그리고 2024년, 같은 곳에서 처음 마주쳤습니다." 자막
-     → 2024 뱃지
-     → 2024-b 사진(오른쪽, 왼쪽은 빈 공간)
-     → 왼쪽 말풍선(잘라낸 이미지)
-     → [스크롤해야 다음이 나타남] 2024-a 사진(왼쪽, 오른쪽은 빈 공간)
+     → 2024 뱃지 → 2024-a/b 사진 동시에(다른 연도들처럼) → 안녕! 말풍선
+     → (다시) 2024-b 사진(오른쪽, 왼쪽은 빈 공간) → 왼쪽 말풍선(잘라낸 이미지)
+     → [스크롤해야 다음이 나타남] (다시) 2024-a 사진(왼쪽, 오른쪽은 빈 공간)
      → 오른쪽 말풍선(잘라낸 이미지)
      → 이후 원래 흐름(만남 문장 → 밤 공원 → 갤러리)으로 이어짐 */
   async function play2024Sequence() {
@@ -785,7 +784,14 @@ function initStoryTimeline() {
     show(document.getElementById("badge2024"));
     await wait(900);
 
+    show(document.getElementById("timeline2024ImgA"));
     show(document.getElementById("timeline2024ImgB"));
+    await wait(950);
+
+    show(document.getElementById("bubbleHello"));
+    await wait(1200);
+
+    show(document.getElementById("timeline2024ImgBAgain"));
     await wait(1000);
 
     show(document.getElementById("timeline2024BubbleLeft"));
@@ -800,7 +806,7 @@ function initStoryTimeline() {
 
   async function play2024RowTwo() {
     show(document.getElementById("timeline2024RowTwo"));
-    show(document.getElementById("timeline2024ImgA"));
+    show(document.getElementById("timeline2024ImgAAgain"));
     await wait(1000);
 
     show(document.getElementById("timeline2024BubbleRight"));
@@ -866,8 +872,9 @@ function initStoryTimeline() {
       frames[i - 1].classList.remove("is-active");
     }
 
-    /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장 */
-    await wait(400);
+    /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장
+       (요청대로 0.2초 더 늦게: 400ms → 600ms) */
+    await wait(600);
     show(preciousLine);
   }
 
@@ -959,18 +966,22 @@ function initStoryTimeline() {
   }
 
   function setupScrollReveal() {
-    /* timeline2024RowTwo(2024-a + 오른쪽 말풍선)는 play2024Sequence 안에서
-       별도로 스크롤 트리거하므로, 여기 일반 행 목록에서는 제외 */
+    /* timeline2024RowB/RowTwo(2024 사진이 말풍선과 짝지어 다시 뜨는 부분)는
+       play2024Sequence 안에서 별도로 처리하므로, 여기 일반 행 목록에서는 제외 */
     const rows = scroll.querySelectorAll(
-      ".story-timeline .timeline-row:not(#timeline2024RowTwo)"
+      ".story-timeline .timeline-row:not(.timeline-row--sub)"
     );
-    rows.forEach((row, idx) =>
-      revealOnScroll(row, () => queueTimelineRow(row, idx === rows.length - 1), {
-        root: null,
-        rootMargin: "0px 0px -12% 0px",
-        threshold: 0.25,
-      })
-    );
+    rows.forEach((row, idx) => {
+      const isLast = idx === rows.length - 1;
+      /* 2024(마지막) 줄은 앞 줄들의 대기열(큐)에 걸리지 않고, 스크롤로
+         들어오면 바로 자막부터 시작되게 함 — 큐를 타면 앞 줄들 지연이
+         쌓여서 "그리고 2024년..." 자막이 늦게 뜨는 문제가 있었음 */
+      revealOnScroll(
+        row,
+        () => (isLast ? revealTimelineRow(row, true) : queueTimelineRow(row, false)),
+        { root: null, rootMargin: "0px 0px -12% 0px", threshold: 0.25 }
+      );
+    });
 
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
        - "서로의 가장 소중한..."(#storyPreciousLine): 밤 공원 시퀀스 뒤
