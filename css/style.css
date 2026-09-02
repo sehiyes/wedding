@@ -2299,6 +2299,13 @@ input:focus-visible,
   margin-bottom: 30px;
 }
 
+#storyWeddingDateLine {
+  font-family: var(--font-title);
+  font-size: 1.75rem;
+  line-height: 1.5;
+  margin-top: 40px;
+}
+
 /* JS가 순서를 직접 제어 */
 .story-timeline .timeline-row.reveal {
   opacity: 1;
