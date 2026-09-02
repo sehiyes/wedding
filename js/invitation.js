@@ -777,6 +777,12 @@ function initStoryTimeline() {
      → [스크롤해야 다음이 나타남] (다시) 2024-a 사진(왼쪽, 오른쪽은 빈 공간)
      → 오른쪽 말풍선(잘라낸 이미지)
      → 이후 원래 흐름(만남 문장 → 밤 공원 → 갤러리)으로 이어짐 */
+  /* 2024 시퀀스:
+     자막 → 뱃지 → 2024-a/b 동시에 → 안녕! 말풍선
+     → (간격 넓게 띄운 뒤) "Q. 처음 봤던 순간, 기억하시나요?"
+     → 여자 인터뷰 사진 → 여자 말풍선
+     → 남자 인터뷰 사진 → 남자 말풍선
+     → 이후 원래 흐름(만남+소중한 문장 → 밤 공원 → 갤러리)으로 이어짐 */
   async function play2024Sequence() {
     show(document.getElementById("timeline2024Caption"));
     await wait(1100);
@@ -789,28 +795,23 @@ function initStoryTimeline() {
     await wait(950);
 
     show(document.getElementById("bubbleHello"));
-    await wait(1200);
+    /* "안녕!" 말풍선과 인터뷰 구간 사이 간격을 넉넉하게 */
+    await wait(1800);
 
-    show(document.getElementById("timeline2024ImgBAgain"));
-    await wait(1000);
+    show(document.getElementById("timeline2024QCaption"));
+    await wait(1300);
 
-    show(document.getElementById("timeline2024BubbleLeft"));
+    show(document.getElementById("interviewPanelB"));
+    await wait(1300);
 
-    const rowTwo = document.getElementById("timeline2024RowTwo");
-    revealOnScroll(rowTwo, () => play2024RowTwo(), {
-      root: null,
-      rootMargin: "0px 0px -12% 0px",
-      threshold: 0.3,
-    });
-  }
+    show(document.getElementById("interviewBubbleLeft"));
+    await wait(1700);
 
-  async function play2024RowTwo() {
-    show(document.getElementById("timeline2024RowTwo"));
-    show(document.getElementById("timeline2024ImgAAgain"));
-    await wait(1000);
+    show(document.getElementById("interviewPanelA"));
+    await wait(1300);
 
-    show(document.getElementById("timeline2024BubbleRight"));
-    await wait(1200);
+    show(document.getElementById("interviewBubbleRight"));
+    await wait(1500);
 
     continueAfterLastRow();
   }
@@ -830,7 +831,7 @@ function initStoryTimeline() {
 
   /* 밤 공원 4컷: 시작되면 스크롤과 상관없이 시간에 따라
      1 → 2 → 3 → 4로 넘어감. 마지막 컷(손 마주치는 순간)에서는
-     두 사람 머리 위로 하트가 뜸. 다 끝나야 다음 문장이 나타남 */
+     두 사람 머리 위로 하트가 뜸 */
   async function playNightSequence() {
     if (!storyCrossfade) return;
     const frames = Array.from(
@@ -842,11 +843,8 @@ function initStoryTimeline() {
     const heartLeft = storyCrossfade.querySelector(".heart-left");
     const heartRight = storyCrossfade.querySelector(".heart-right");
 
-    const preciousLine = document.getElementById("storyPreciousLine");
-
     if (frames.length < 4) {
       show(storyCrossfade);
-      show(preciousLine);
       return;
     }
 
@@ -871,11 +869,6 @@ function initStoryTimeline() {
       await wait(i === 3 ? 1700 : 1200);
       frames[i - 1].classList.remove("is-active");
     }
-
-    /* 4컷 전환이 완전히 끝난 뒤에 "서로의 가장 소중한 사람이..." 등장
-       (요청대로 0.2초 더 늦게: 400ms → 600ms) */
-    await wait(600);
-    show(preciousLine);
   }
 
   /* 텍스트를 한 글자씩 타이핑하듯 채움 (다 채워질 때까지 대기 가능) */
@@ -954,8 +947,9 @@ function initStoryTimeline() {
   async function continueAfterLastRow() {
     show(document.getElementById("storyMeetLine"));
 
-    /* "다행이도(?)..." 문장을 다 읽을 시간을 준 뒤에 밤 공원 시작 */
-    await wait(1500);
+    /* "다행이도(?)... 소중한 사람이 되었습니다" 문장을 다 읽을 시간을
+       준 뒤에 밤 공원 시작 (요청대로 0.2초 더 여유 있게) */
+    await wait(1700);
     await playNightSequence();
 
     await wait(300);
@@ -966,11 +960,7 @@ function initStoryTimeline() {
   }
 
   function setupScrollReveal() {
-    /* timeline2024RowB/RowTwo(2024 사진이 말풍선과 짝지어 다시 뜨는 부분)는
-       play2024Sequence 안에서 별도로 처리하므로, 여기 일반 행 목록에서는 제외 */
-    const rows = scroll.querySelectorAll(
-      ".story-timeline .timeline-row:not(.timeline-row--sub)"
-    );
+    const rows = scroll.querySelectorAll(".story-timeline .timeline-row");
     rows.forEach((row, idx) => {
       const isLast = idx === rows.length - 1;
       /* 2024(마지막) 줄은 앞 줄들의 대기열(큐)에 걸리지 않고, 스크롤로
@@ -984,7 +974,7 @@ function initStoryTimeline() {
     });
 
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
-       - "서로의 가장 소중한..."(#storyPreciousLine): 밤 공원 시퀀스 뒤
+       - "Q. 처음 봤던 순간..."(#timeline2024QCaption): play2024Sequence 안에서
        - "운동하는 곳에서..."(#storyMeetLine): 2024 줄 → 안녕! 말풍선 뒤
        - "이제는 같은 길을..."(#storyFinalLine)은 이제 .story-gallery 안으로
          옮겨져서 갤러리 체인에서 순서대로 처리되므로 이 선택자와는 무관
@@ -992,7 +982,7 @@ function initStoryTimeline() {
        여기서는 제외하고, 밤공원/갤러리도 더 이상 독립적으로 스크롤
        트리거하지 않음 (그 앞 문장이 뜨기 전에 먼저 재생되던 문제 방지) */
     const topLevelLines = scroll.querySelectorAll(
-      ".story-scroll > .story-line:not(#storyPreciousLine):not(#storyMeetLine)"
+      ".story-scroll > .story-line:not(#timeline2024QCaption):not(#storyMeetLine)"
     );
     topLevelLines.forEach((line) => revealOnScroll(line, () => show(line)));
   }
