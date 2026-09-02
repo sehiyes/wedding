@@ -1093,9 +1093,17 @@ function initStoryTimeline() {
       revealTimelineRow(row, isLast);
     });
 
-    /* "그리고 2024년..." 자막은 별도로 독립 스크롤 트리거 */
-    revealOnScroll(document.getElementById("timeline2024Caption"), () =>
-      show(document.getElementById("timeline2024Caption"))
+    /* "그리고 2024년..." 자막: 예전엔 독립적인(더 낮은) 기준으로 따로
+       관찰해서, 2020년 줄 사진이 아직 순서대기(queueRowReveal) 중인데도
+       이 자막이 먼저 튀어나오는 문제가 있었음. 그래서 이제는 같은
+       기준(threshold/rootMargin)과 같은 대기열을 함께 씀 */
+    revealOnScroll(
+      document.getElementById("timeline2024Caption"),
+      () =>
+        queueRowReveal(() => {
+          show(document.getElementById("timeline2024Caption"));
+        }),
+      { root: null, rootMargin: "0px 0px -8% 0px", threshold: 0.5 }
     );
 
     /* .story-scroll 바로 아래 문장 중 첫 문장만 독립적으로 스크롤 트리거.
