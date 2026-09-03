@@ -631,6 +631,7 @@ input:focus-visible,
   background: transparent;
   padding: 12px 0;
   border-radius: 999px;
+  font-family: var(--font-section);
   font-size: 0.8125rem;
   letter-spacing: 0.5px;
   color: var(--ink);
@@ -1811,8 +1812,8 @@ input:focus-visible,
   gap: 8px;
 }
 .calendar-heading {
-  font-family: var(--font-accent);
-  font-size: 2rem;
+  font-family: var(--font-section);
+  font-size: 1.67rem;
   letter-spacing: 0.5px;
   margin: 0;
 }
