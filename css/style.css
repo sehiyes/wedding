@@ -24,6 +24,25 @@
   font-display: swap;
 }
 
+/* ===== ONLY: 섹션 제목 & 버튼 전용 폰트 (우리들의 이야기 안 폰트,
+   초청문구, 신랑신부 정보 등은 위 TitleFont/WeddingFont 그대로 유지) ===== */
+@font-face {
+  font-family: "Cafe24Ssurround";
+  src: url("../fonts/section-title-font/Cafe24Ssurround.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ===== ONLY: 주소/오시는 길 안내(지하철·버스·주차)/계좌정보 전용 폰트 ===== */
+@font-face {
+  font-family: "NanumSquareNeoBold";
+  src: url("../fonts/info-font/NanumSquareNeoBold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------------------------------------------------------
    0. 디자인 토큰
    나중에 폰트를 교체하려면 --font-body / --font-accent / --font-title 값과
@@ -54,6 +73,10 @@
   --font-body: "WeddingFont", "Gowun Batang", "Noto Serif KR", serif;
   --font-accent: "WeddingFont", "Caveat", "Nanum Pen Script", cursive;
   --font-title: "TitleFont", "WeddingFont", "Caveat", cursive;
+  /* 섹션 제목 & 버튼 전용 (우리들의 이야기/초청문구/신랑신부 정보는 그대로 --font-title 사용) */
+  --font-section: "Cafe24Ssurround", var(--font-title);
+  /* 주소/오시는 길 안내/계좌정보 전용 */
+  --font-info: "NanumSquareNeoBold", var(--font-body);
 
   --max-w: 430px;
   --gutter: 28px;
@@ -116,7 +139,7 @@ img {
   display: block;
 }
 button {
-  font-family: inherit;
+  font-family: var(--font-section);
   cursor: pointer;
 }
 a {
@@ -203,7 +226,7 @@ input:focus-visible,
   transform: translateY(0);
 }
 .section-title {
-  font-family: var(--font-title);
+  font-family: var(--font-section);
   font-size: 1.875rem;
   text-align: center;
   color: var(--ink);
@@ -587,11 +610,13 @@ input:focus-visible,
   text-align: center;
 }
 .map-hall {
+  font-family: var(--font-info);
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 6px;
 }
 .map-addr {
+  font-family: var(--font-info);
   font-size: 1.375rem;
   color: var(--ink-soft);
   line-height: 1.3;
@@ -693,14 +718,14 @@ input:focus-visible,
   margin-bottom: 20px;
 }
 .guide-block h3 {
-  font-family: var(--font-body);
+  font-family: var(--font-info);
   font-size: 0.875rem;
   font-weight: 700;
   color: var(--ink);
   margin: 0 0 10px;
 }
 .guide-block p {
-  font-family: var(--font-body);
+  font-family: var(--font-info);
   font-size: 1.375rem;
   color: var(--ink-soft);
   white-space: pre-line;
@@ -756,6 +781,7 @@ input:focus-visible,
   margin-top: 2px;
 }
 .account-person-name {
+  font-family: var(--font-info);
   font-weight: 700;
   color: var(--ink);
   font-size: 1.25rem;
@@ -768,6 +794,7 @@ input:focus-visible,
   gap: 10px;
 }
 .account-line {
+  font-family: var(--font-info);
   flex: 1;
   min-width: 0;
   white-space: nowrap;
