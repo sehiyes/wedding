@@ -118,7 +118,7 @@ const INVITATION_TEXT = {
 
   rsvpIntro: "부담 없이 편하게 알려주세요.\n소중한 걸음, 미리 알려주시면\n준비하는 데 큰 도움이 됩니다.",
 
-  snapTitle: "하객 스냅",
+  snapTitle: "함께한 순간",
   snapDescription: "앞만 보고 걷느라 저희는 미처 보지 못했던\n그날의 순간을 공유해주세요.",
 };
 
