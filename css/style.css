@@ -2374,7 +2374,7 @@ input:focus-visible,
 }
 .interview-photo-small {
   flex: 0 0 24%;
-  max-width: 100px;
+  max-width: 130px;
   height: auto;
   border-radius: 14px;
   object-fit: cover;
