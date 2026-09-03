@@ -27,7 +27,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=16" />
+<link rel="stylesheet" href="css/style.css?v=17" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -406,7 +406,7 @@
       <!-- 03. 사진 -->
       <section class="section prep-section" id="sec-gallery">
         <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
-        <h2 class="section-title">사진</h2>
+        <h2 class="section-title">우리의 순간</h2>
         <p class="section-sub">Gallery</p>
 
         <div class="prep-copy fontzip-nanum-sinhonbubu">
@@ -605,30 +605,10 @@
         <div id="accountsContainer"></div>
       </section>
 
-
-      <!-- 축하 메시지 (가장 마지막 컨텐츠 섹션) - Guest Garden 컨셉 -->
-      <section class="section" id="sec-message">
-        <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
-        <h2 class="section-title">축하 메시지</h2>
-        <p class="section-sub">Guestbook</p>
-        <p class="garden-intro">저희의 정원에 원하는 모양의 나무를 심어주세요.<br/>보내주신 사랑으로 예쁘게 가꾸겠습니다.</p>
-
-        <button type="button" class="btn-submit" id="btnOpenTreePick">나무 심기</button>
-
-        <div class="garden-scene">
-          <div class="garden-ground">
-            <div class="tree-track" id="messageList"></div>
-            <img class="grass-tuft-img" src="images/deco/grass-tuft.png" alt="" loading="lazy" />
-          </div>
-        </div>
-        <p class="message-hint">← 나무를 옆으로 넘겨보고, 클릭하면 메시지를 볼 수 있어요 →</p>
-      </section>
-
-
       <!-- 10. 하객 스냅 -->
       <section class="section" id="sec-snap">
         <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
-        <h2 class="section-title" id="snapTitle">하객 스냅 📷</h2>
+        <h2 class="section-title" id="snapTitle">함께한 순간 📷</h2>
         <p class="section-sub">Share Your Photos</p>
 
         <div class="upload-box">
@@ -646,7 +626,25 @@
           </p>
         </div>
       </section>
-         
+
+      <!-- 축하 메시지 (가장 마지막 컨텐츠 섹션) - Guest Garden 컨셉 -->
+      <section class="section" id="sec-message">
+        <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
+        <h2 class="section-title">축하 한마디</h2>
+        <p class="section-sub">Guestbook</p>
+        <p class="garden-intro">저희의 정원에 원하는 모양의 나무를 심어주세요.<br/>보내주신 사랑으로 예쁘게 가꾸겠습니다.</p>
+
+        <button type="button" class="btn-submit" id="btnOpenTreePick">나무 심기</button>
+
+        <div class="garden-scene">
+          <div class="garden-ground">
+            <div class="tree-track" id="messageList"></div>
+            <img class="grass-tuft-img" src="images/deco/grass-tuft.png" alt="" loading="lazy" />
+          </div>
+        </div>
+        <p class="message-hint">← 나무를 옆으로 넘겨보고, 클릭하면 메시지를 볼 수 있어요 →</p>
+      </section>
+
       <!-- 청첩장 공유하기 -->
       <div class="share-entry">
         <button type="button" class="btn-submit share-btn" id="btnCopyLink">
