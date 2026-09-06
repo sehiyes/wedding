@@ -2097,8 +2097,7 @@ input:focus-visible,
 
 /* ===== ONLY: 인터뷰 캐릭터 사진 145px + 말풍선 원래 크기(68%) 둘 다 유지.
    둘을 합치면 화면 폭보다 넓어질 수 있어서, 부모(.guide-panel-inner)의
-   좌우 22px 여백을 이 줄만 뚫고 나가 폭을 좀 더 확보했고, 그래도
-   못 들어가는 좁은 화면에서는 잘리는 대신 옆으로 살짝 스크롤되게 함 ===== */
+   좌우 22px 여백을 이 줄만 뚫고 나가 폭을 좀 더 확보함 ===== */
 .interview-turn {
   display: flex;
   align-items: center;
@@ -2106,8 +2105,6 @@ input:focus-visible,
   gap: 8px;
   margin: 6px -22px 34px;
   padding: 0 22px;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
 }
 .interview-bubble-wrap {
   flex: 0 0 68%;
