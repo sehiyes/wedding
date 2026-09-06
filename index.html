@@ -27,7 +27,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=19" />
+<link rel="stylesheet" href="css/style.css?v=20" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -493,10 +493,6 @@
         <p class="dday-sentence" id="ddaySentence"></p>
 
         <p class="ceremony-info">2027.04.18(일) 오전 11시<br />로프트가든 344</p>
-
-        <button class="rsvp-toggle" id="btnRsvpToggle">
-          <span>참석 여부 남기기</span>
-        </button>
       </section>
 
       <script>
@@ -652,11 +648,6 @@
         </button>
       </div>
 
-      <!-- 참석자 정보 관리자 확인 -->
-      <div class="admin-entry">
-        <button class="admin-link" id="btnAdminOpen">참석 여부 확인</button>
-      </div>
-
       <p class="footer-mark">✿ Thank you ✿</p>
     </div>
   </main>
@@ -721,62 +712,6 @@
   <button class="lightbox-prev" id="lightboxPrev">‹</button>
   <img id="lightboxImg" alt=""/>
   <button class="lightbox-next" id="lightboxNext">›</button>
-</div>
-
-<!-- 참석 여부 팝업 -->
-<div class="rsvp-modal-backdrop" id="rsvpModalBackdrop">
-  <div class="rsvp-modal">
-    <button class="rsvp-modal-close" id="rsvpModalClose">✕</button>
-    <h3>참석 여부 전달하기</h3>
-    <form id="rsvpForm">
-      <div class="form-block">
-        <label>이름</label>
-        <input type="text" id="rsvpName" required maxlength="20" />
-      </div>
-
-      <div class="form-block">
-        <label>전화번호 <span class="label-hint">(동명이인 확인 위함)</span></label>
-        <input type="tel" id="rsvpPhone" required maxlength="20" placeholder="010-0000-0000" />
-      </div>
-
-      <div class="form-block">
-        <label>어느 측인가요?</label>
-        <div class="radio-group" id="rsvpSideGroup">
-          <label class="radio-pill" data-value="groom">신랑측<input type="radio" name="rsvpSide" value="groom" required></label>
-          <label class="radio-pill" data-value="bride">신부측<input type="radio" name="rsvpSide" value="bride"></label>
-        </div>
-      </div>
-
-      <div class="form-block">
-        <label>참석 여부</label>
-        <div class="radio-group" id="rsvpAttendGroup">
-          <label class="radio-pill" data-value="yes">참석<input type="radio" name="rsvpAttend" value="yes" required></label>
-          <label class="radio-pill" data-value="no">참석하지 못함<input type="radio" name="rsvpAttend" value="no"></label>
-        </div>
-      </div>
-
-      <div class="form-block">
-        <label>전하고 싶은 말 (선택)</label>
-        <textarea id="rsvpMessage" rows="2" maxlength="200"></textarea>
-      </div>
-
-      <button type="submit" class="btn-submit">참석 여부 전달하기</button>
-    </form>
-  </div>
-</div>
-
-<!-- 관리자 코드 입력 모달 -->
-<div class="admin-modal-backdrop" id="adminModalBackdrop">
-  <div class="admin-modal">
-    <h3>관리자 코드 입력</h3>
-    <input type="password" id="adminCodeInput" placeholder="코드를 입력하세요" inputmode="numeric" />
-    <p class="admin-error" id="adminError">코드가 올바르지 않습니다.</p>
-    <div class="row">
-      <button class="ghost" id="btnAdminCancel">취소</button>
-      <button id="btnAdminConfirm">확인</button>
-    </div>
-    <div id="adminPanel"></div>
-  </div>
 </div>
 
 <!-- 배경음악 -->

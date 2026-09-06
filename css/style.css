@@ -249,7 +249,6 @@ input:focus-visible,
 #sec-calendar { background: var(--ivory); }
 #sec-map { background: var(--beige); }
 #sec-account { background: var(--ivory); }
-#sec-rsvp { background: var(--beige); }
 #sec-snap { background: var(--ivory); }
 #sec-message { background: var(--beige); }
 
@@ -843,31 +842,6 @@ input:focus-visible,
 .form-block textarea:focus {
   border-bottom: 1px solid var(--ink);
 }
-.radio-group {
-  display: flex;
-  gap: 10px;
-}
-.radio-pill {
-  flex: 1;
-  text-align: center;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 11px 0;
-  font-size: 1.125rem;
-  color: var(--ink-soft);
-  position: relative;
-}
-.radio-pill input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-.radio-pill.is-checked {
-  border-color: var(--ink);
-  background: var(--ink);
-  color: var(--ivory);
-}
 .btn-submit {
   width: 100%;
   margin-top: 8px;
@@ -1169,207 +1143,6 @@ input:focus-visible,
 }
 
 /* ---------------------------------------------------------
-   13-1. 참석 여부 - 버튼을 누르면 팝업으로 뜸
---------------------------------------------------------- */
-.rsvp-intro {
-  text-align: center;
-  font-size: 1.375rem;
-  color: var(--ink-soft);
-  margin-bottom: 24px;
-  line-height: 1.45;
-  white-space: pre-line;
-}
-.rsvp-toggle {
-  width: 100%;
-  border: 1px solid var(--ink);
-  background: transparent;
-  border-radius: 999px;
-  padding: 15px 22px;
-  font-size: 0.8125rem;
-  letter-spacing: 1px;
-  color: var(--ink);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  transition: background 0.25s var(--ease), color 0.25s var(--ease);
-}
-.rsvp-toggle:hover {
-  background: var(--ink);
-  color: var(--ivory);
-}
-
-/* 참석 여부 팝업 */
-.rsvp-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(30, 28, 24, 0.5);
-  z-index: 300;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-}
-.rsvp-modal-backdrop.is-open {
-  display: flex;
-}
-.rsvp-modal {
-  position: relative;
-  background: var(--paper);
-  border-radius: 18px;
-  padding: 28px 24px 24px;
-  width: 100%;
-  max-width: 360px;
-  max-height: 85vh;
-  overflow-y: auto;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.18);
-}
-.rsvp-modal h3 {
-  text-align: center;
-  font-family: var(--font-title);
-  font-size: 1.25rem;
-  margin: 0 0 20px;
-  color: var(--ink);
-}
-.rsvp-modal-close {
-  position: absolute;
-  top: 14px;
-  right: 16px;
-  border: none;
-  background: transparent;
-  font-size: 0.9375rem;
-  color: var(--ink-faint);
-  padding: 4px;
-}
-.rsvp-modal-close:hover {
-  color: var(--ink);
-}
-
-/* ---------------------------------------------------------
-   14. 관리자 확인
---------------------------------------------------------- */
-.admin-entry {
-  text-align: center;
-  padding: 40px var(--gutter) 60px;
-}
-.admin-link {
-  background: none;
-  border: none;
-  font-size: 0.8125rem;
-  color: var(--ink-faint);
-  text-decoration: underline;
-  letter-spacing: 1px;
-}
-.admin-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(30, 28, 24, 0.5);
-  z-index: 300;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.admin-modal-backdrop.is-open {
-  display: flex;
-}
-.admin-modal {
-  background: var(--paper);
-  border-radius: 10px;
-  padding: 26px 22px;
-  width: 100%;
-  max-width: 320px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
-}
-.admin-modal h3 {
-  margin: 0 0 14px;
-  font-size: 1.0625rem;
-  text-align: center;
-}
-.admin-modal input {
-  width: 100%;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  padding: 11px 12px;
-  font-size: 1.0625rem;
-  margin-bottom: 12px;
-}
-.admin-modal .row {
-  display: flex;
-  gap: 8px;
-}
-.admin-modal button {
-  flex: 1;
-  padding: 11px 0;
-  border-radius: 6px;
-  border: 1px solid var(--ink);
-  background: var(--ink);
-  color: var(--ivory);
-  font-size: 0.90625rem;
-}
-.admin-modal button.ghost {
-  background: transparent;
-  color: var(--ink);
-}
-.admin-error {
-  color: #b3543f;
-  font-size: 0.8125rem;
-  margin: -6px 0 10px;
-  display: none;
-}
-.admin-error.is-visible {
-  display: block;
-}
-
-.admin-panel {
-  margin-top: 16px;
-  border-radius: 8px;
-  background: var(--paper);
-  box-shadow: var(--card-shadow);
-  padding: 16px;
-}
-.admin-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-bottom: 16px;
-}
-.admin-stats .stat {
-  text-align: center;
-  background: var(--ivory);
-  border-radius: 6px;
-  padding: 10px 4px;
-}
-.admin-stats .stat .n {
-  font-size: 1.1875rem;
-  font-weight: 700;
-}
-.admin-stats .stat .l {
-  font-size: 0.6875rem;
-  color: var(--ink-faint);
-}
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8125rem;
-}
-.admin-table tbody tr:nth-child(even) {
-  background: var(--ivory);
-}
-.admin-table th,
-.admin-table td {
-  padding: 8px 5px;
-  text-align: left;
-  vertical-align: top;
-}
-.admin-note {
-  font-size: 0.75rem;
-  color: var(--ink-faint);
-  margin-top: 14px;
-  line-height: 1.6;
-}
-
-/* ---------------------------------------------------------
    15. Section 10 - 하객 스냅
 --------------------------------------------------------- */
 .upload-box {
@@ -1636,7 +1409,6 @@ input:focus-visible,
 #sec-calendar,
 #sec-map,
 #sec-account,
-#sec-rsvp,
 #sec-snap,
 #sec-message {
   background: #ffffff !important;
@@ -1675,8 +1447,6 @@ input:focus-visible,
 
 /* Main action buttons use sage instead of black. */
 .btn-submit,
-#btnRsvpToggle,
-.rsvp-toggle,
 #btnOpenTreePick {
   border-color: #71866a !important;
 }
@@ -1686,15 +1456,11 @@ input:focus-visible,
   color: #ffffff !important;
 }
 
-.rsvp-toggle,
-#btnRsvpToggle,
 #btnOpenTreePick {
   color: #5f7659 !important;
   background: #f4f7f0 !important;
 }
 
-.rsvp-toggle:hover,
-#btnRsvpToggle:hover,
 #btnOpenTreePick:hover {
   background: #71866a !important;
   color: #ffffff !important;
@@ -1752,11 +1518,6 @@ input:focus-visible,
   color: #5d7158 !important;
 }
 
-.radio-pill.is-checked {
-  border-color: #71866a !important;
-  background: #71866a !important;
-}
-
 .form-block input[type="text"]:focus,
 .form-block input[type="tel"]:focus,
 .form-block input[type="password"]:focus,
@@ -1792,10 +1553,6 @@ input:focus-visible,
 /* Tiny coral accent, used sparingly. */
 .tree-arrow {
   color: #d98a77 !important;
-}
-
-.admin-link {
-  color: #9aa394 !important;
 }
 
 /* =========================================================
@@ -1991,8 +1748,6 @@ input:focus-visible,
 .account-toggle,
 .btn-upload,
 .copy-chip,
-.rsvp-toggle,
-#btnRsvpToggle,
 #btnOpenTreePick {
   background: #71866a !important;
   border-color: #71866a !important;
@@ -2004,8 +1759,6 @@ input:focus-visible,
 .account-toggle:hover,
 .btn-upload:hover,
 .copy-chip:hover,
-.rsvp-toggle:hover,
-#btnRsvpToggle:hover,
 #btnOpenTreePick:hover {
   background: #5f7359 !important;
   color: #ffffff !important;
@@ -2349,8 +2102,12 @@ input:focus-visible,
   gap: 8px;
   margin: 6px 0 34px;
 }
+/* ===== ONLY: 인터뷰 캐릭터 사진을 145px 고정 크기로 키움.
+   말풍선(.interview-bubble-wrap)은 남는 공간을 채우도록 유연하게
+   바꿔서, 사진이 커진 만큼 겹치거나 넘치지 않게 함 ===== */
 .interview-bubble-wrap {
-  flex: 0 0 68%;
+  flex: 1 1 auto;
+  min-width: 0;
   max-width: 310px;
 }
 .interview-bubble-svg {
@@ -2373,8 +2130,9 @@ input:focus-visible,
   fill: var(--ink);
 }
 .interview-photo-small {
-  flex: 0 0 24%;
-  max-width: 130px;
+  flex: 0 0 145px;
+  width: 145px;
+  max-width: 145px;
   height: auto;
   border-radius: 14px;
   object-fit: cover;

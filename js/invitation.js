@@ -1,12 +1,12 @@
 /* =========================================================
    invitation.js
    ---------------------------------------------------------
-   축하메시지 / 참석여부는 Supabase(Postgres)에 저장됩니다.
+   축하메시지(방명록)는 Supabase(Postgres)에 저장됩니다.
    - 방명록(guestbook_messages): 누구나 읽고 쓸 수 있음 (공개 방명록)
-   - 참석여부(rsvps): 누구나 "쓰기"만 가능, "조회"는 관리자 코드로
-     서버(Postgres 함수 get_rsvps_with_code) 검증을 거쳐야만 가능
    테이블/보안정책은 supabase/schema.sql 참고. 연결 정보는
    js/config.js의 SUPABASE_URL / SUPABASE_ANON_KEY.
+   (참석 여부(RSVP) 기능은 제거되었습니다. 서버의 rsvps 테이블/함수는
+   그대로 남아있지만 프론트엔드에서는 더 이상 쓰이지 않습니다.)
    ========================================================= */
 
 /* ---------------------------------------------------------
@@ -83,17 +83,6 @@ function initAccountAccordion() {
 /* ---------------------------------------------------------
    라디오 pill 시각 상태
 --------------------------------------------------------- */
-function initRadioPills() {
-  document.querySelectorAll(".radio-group").forEach((group) => {
-    group.addEventListener("change", () => {
-      group.querySelectorAll(".radio-pill").forEach((pill) => {
-        const input = pill.querySelector("input");
-        pill.classList.toggle("is-checked", input.checked);
-      });
-    });
-  });
-}
-
 /* ---------------------------------------------------------
    Supabase 연결 여부 확인 헬퍼
 --------------------------------------------------------- */
@@ -393,157 +382,6 @@ function initMessageForm() {
     showToast("정원에 나무를 심었습니다 🌳");
   });
   renderMessages();
-}
-
-/* ---------------------------------------------------------
-   09. 참석 여부 - 버튼을 누르면 팝업으로 뜸
---------------------------------------------------------- */
-function initRsvpToggle() {
-  const btn = document.getElementById("btnRsvpToggle");
-  const backdrop = document.getElementById("rsvpModalBackdrop");
-  btn.addEventListener("click", () => {
-    backdrop.classList.add("is-open");
-    setTimeout(() => document.getElementById("rsvpName").focus(), 200);
-  });
-}
-
-function initRsvpModal() {
-  const backdrop = document.getElementById("rsvpModalBackdrop");
-  const closeBtn = document.getElementById("rsvpModalClose");
-  closeBtn.addEventListener("click", () => backdrop.classList.remove("is-open"));
-  backdrop.addEventListener("click", (e) => {
-    if (e.target === backdrop) backdrop.classList.remove("is-open");
-  });
-}
-
-function initRsvpForm() {
-  const form = document.getElementById("rsvpForm");
-  const backdrop = document.getElementById("rsvpModalBackdrop");
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    if (!requireSupabase()) return;
-
-    const name = document.getElementById("rsvpName").value.trim();
-    const phone = document.getElementById("rsvpPhone").value.trim();
-    const side = form.querySelector('input[name="rsvpSide"]:checked');
-    const attend = form.querySelector('input[name="rsvpAttend"]:checked');
-    const message = document.getElementById("rsvpMessage").value.trim();
-
-    if (!name || !phone || !side || !attend) return;
-
-    const submitBtn = form.querySelector(".btn-submit");
-    submitBtn.disabled = true;
-
-    const { error } = await supabaseClient.from("rsvps").insert({
-      name,
-      phone,
-      side: side.value, // groom | bride
-      attend: attend.value, // yes | no
-      message: message || null,
-    });
-
-    submitBtn.disabled = false;
-
-    if (error) {
-      console.error(error);
-      showToast(`참석 여부 전달 실패: ${error.message || "알 수 없는 오류"}`);
-      return;
-    }
-
-    form.reset();
-    form.querySelectorAll(".radio-pill").forEach((p) => p.classList.remove("is-checked"));
-    showToast("참석 여부가 전달되었습니다.");
-    backdrop.classList.remove("is-open");
-  });
-}
-
-/* ---------------------------------------------------------
-   관리자 확인 - Postgres 함수 get_rsvps_with_code 로 코드 검증 + 조회를
-   서버에서 한 번에 처리 (코드/데이터가 프론트엔드에 노출되지 않음)
---------------------------------------------------------- */
-function initAdmin() {
-  const backdrop = document.getElementById("adminModalBackdrop");
-  const input = document.getElementById("adminCodeInput");
-  const error = document.getElementById("adminError");
-  const panel = document.getElementById("adminPanel");
-
-  document.getElementById("btnAdminOpen").addEventListener("click", () => {
-    backdrop.classList.add("is-open");
-    input.value = "";
-    error.classList.remove("is-visible");
-    panel.innerHTML = "";
-    setTimeout(() => input.focus(), 50);
-  });
-
-  document.getElementById("btnAdminCancel").addEventListener("click", () => {
-    backdrop.classList.remove("is-open");
-  });
-
-  document.getElementById("btnAdminConfirm").addEventListener("click", async () => {
-    if (!requireSupabase()) return;
-
-    const confirmBtn = document.getElementById("btnAdminConfirm");
-    confirmBtn.disabled = true;
-
-    const { data, error: rpcError } = await supabaseClient.rpc("get_rsvps_with_code", {
-      input_code: input.value,
-    });
-
-    confirmBtn.disabled = false;
-
-    if (rpcError) {
-      error.classList.add("is-visible");
-      panel.innerHTML = "";
-      return;
-    }
-
-    error.classList.remove("is-visible");
-    renderAdminPanel(panel, data || []);
-  });
-}
-
-function renderAdminPanel(panel, list) {
-  const total = list.length;
-  const attendCount = list.filter((r) => r.attend === "yes").length;
-  const absentCount = list.filter((r) => r.attend === "no").length;
-  const groomCount = list.filter((r) => r.side === "groom" && r.attend === "yes").length;
-  const brideCount = list.filter((r) => r.side === "bride" && r.attend === "yes").length;
-
-  const rows = list
-    .map(
-      (r) => `
-      <tr>
-        <td>${escapeHtml(r.name)}</td>
-        <td>${escapeHtml(r.phone || "-")}</td>
-        <td>${r.side === "groom" ? "신랑측" : "신부측"}</td>
-        <td>${r.attend === "yes" ? "참석" : "불참"}</td>
-        <td>${escapeHtml(r.message || "-")}</td>
-        <td>${formatDate(r.created_at)}</td>
-      </tr>`
-    )
-    .join("");
-
-  panel.innerHTML = `
-    <div class="admin-panel">
-      <div class="admin-stats">
-        <div class="stat"><div class="n">${total}</div><div class="l">전체 응답</div></div>
-        <div class="stat"><div class="n">${attendCount}</div><div class="l">참석</div></div>
-        <div class="stat"><div class="n">${absentCount}</div><div class="l">불참</div></div>
-        <div class="stat"><div class="n">${groomCount}</div><div class="l">신랑측 참석</div></div>
-        <div class="stat"><div class="n">${brideCount}</div><div class="l">신부측 참석</div></div>
-      </div>
-      <div style="max-height:220px; overflow:auto;">
-        <table class="admin-table">
-          <thead><tr><th>이름</th><th>전화번호</th><th>측</th><th>참석</th><th>메시지</th><th>작성일</th></tr></thead>
-          <tbody>${rows || `<tr><td colspan="6" style="text-align:center;color:var(--ink-faint)">응답 없음</td></tr>`}</tbody>
-        </table>
-      </div>
-      <p class="admin-note">
-        ※ 코드 검증과 조회는 Supabase의 get_rsvps_with_code 함수 안에서
-        서버 측으로 처리됩니다. 코드가 맞지 않으면 데이터가 전혀 반환되지 않습니다.
-      </p>
-    </div>
-  `;
 }
 
 /* ---------------------------------------------------------
@@ -1207,7 +1045,7 @@ function initMusicButtonOverlapGuard() {
 
   const targets = Array.from(
     document.querySelectorAll(
-      "#btnStoryToggle, #btnRsvpToggle, #btnGuideToggle, .map-btn, .copy-chip"
+      "#btnStoryToggle, #btnGuideToggle, .map-btn, .copy-chip"
     )
   );
   if (!targets.length) return;
@@ -1262,16 +1100,11 @@ function escapeHtml(str) {
 document.addEventListener("DOMContentLoaded", () => {
   initIntroStage();
   initAccountAccordion();
-  initRadioPills();
   initTreeModal();
   initTreePickModal();
   initMessageForm();
   initTreeDelete();
   initGardenCarousel();
-  initRsvpToggle();
-  initRsvpModal();
-  initRsvpForm();
-  initAdmin();
   initSnapUpload();
   initLocationInfo();
   initStoryToggle();

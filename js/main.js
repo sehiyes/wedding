@@ -153,10 +153,9 @@ function initMainPhotoIntro() {
 }
 
 /* ---------------------------------------------------------
-   01-1. 참석여부 안내 / 하객 스냅 문구 (config.js에서 관리)
+   01-1. 하객 스냅 문구 (config.js에서 관리)
 --------------------------------------------------------- */
 function initTexts() {
-  document.getElementById("rsvpIntro").textContent = INVITATION_TEXT.rsvpIntro;
   document.getElementById("snapTitle").textContent = `${INVITATION_TEXT.snapTitle} 📷`;
   document.getElementById("snapDescription").textContent = INVITATION_TEXT.snapDescription;
 }
