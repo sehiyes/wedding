@@ -602,6 +602,25 @@
       </section>
 
       <!-- 10. 하객 스냅 -->
+      <!-- 축하 메시지 (Guest Garden 컨셉) -->
+      <section class="section" id="sec-message">
+        <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
+        <h2 class="section-title">축하 한마디</h2>
+        <p class="section-sub">Guestbook</p>
+        <p class="garden-intro">저희의 정원에 원하는 모양의 나무를 심어주세요.<br/>보내주신 사랑으로 예쁘게 가꾸겠습니다.</p>
+
+        <button type="button" class="btn-submit" id="btnOpenTreePick">나무 심기</button>
+
+        <div class="garden-scene">
+          <div class="garden-ground">
+            <div class="tree-track" id="messageList"></div>
+            <img class="grass-tuft-img" src="images/deco/grass-tuft.png" alt="" loading="lazy" />
+          </div>
+        </div>
+        <p class="message-hint">← 나무를 옆으로 넘겨보고, 클릭하면 메시지를 볼 수 있어요 →</p>
+      </section>
+
+      <!-- 하객 사진 (가장 마지막 컨텐츠 섹션) -->
       <section class="section" id="sec-snap">
         <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
         <h2 class="section-title" id="snapTitle">함께한 순간 📷</h2>
@@ -621,24 +640,6 @@
             ※ 사진은 신랑 신부가 지정한 Google Drive 폴더로 바로 전송됩니다.
           </p>
         </div>
-      </section>
-
-      <!-- 축하 메시지 (가장 마지막 컨텐츠 섹션) - Guest Garden 컨셉 -->
-      <section class="section" id="sec-message">
-        <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
-        <h2 class="section-title">축하 한마디</h2>
-        <p class="section-sub">Guestbook</p>
-        <p class="garden-intro">저희의 정원에 원하는 모양의 나무를 심어주세요.<br/>보내주신 사랑으로 예쁘게 가꾸겠습니다.</p>
-
-        <button type="button" class="btn-submit" id="btnOpenTreePick">나무 심기</button>
-
-        <div class="garden-scene">
-          <div class="garden-ground">
-            <div class="tree-track" id="messageList"></div>
-            <img class="grass-tuft-img" src="images/deco/grass-tuft.png" alt="" loading="lazy" />
-          </div>
-        </div>
-        <p class="message-hint">← 나무를 옆으로 넘겨보고, 클릭하면 메시지를 볼 수 있어요 →</p>
       </section>
 
       <!-- 청첩장 공유하기 -->
@@ -758,7 +759,14 @@ window.addEventListener("load", function () {
   new naver.maps.Marker({
     map: map,
     position: center,
-    title: "로프트가든344"
+    title: "로프트가든344",
+    icon: {
+      url: "images/deco/map-marker-heart.png",
+      size: new naver.maps.Size(48, 42),
+      scaledSize: new naver.maps.Size(48, 42),
+      origin: new naver.maps.Point(0, 0),
+      anchor: new naver.maps.Point(24, 21)
+    }
   });
 });
 </script>
