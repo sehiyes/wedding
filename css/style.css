@@ -2312,3 +2312,46 @@ input:focus-visible,
 #badge2024.reveal {
   transition-duration: 1.3s;
 }
+
+/* ===== ONLY: 잎사귀가 눈처럼 잔잔하게 떨어지는 배경 효과
+   (intro-leaf-r4/l4/l7 세 장, 작게+반투명+아주 천천히, 우수수 쏟아지지
+   않도록 개수는 6개로 제한하고 지속시간을 길게(16~24초) + 시작 시점을
+   서로 다르게 어긋나게 둠) ===== */
+.snow-leaves {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.snow-leaf {
+  position: absolute;
+  top: -12%;
+  height: auto;
+  animation: snowLeafFall linear infinite;
+  will-change: transform;
+}
+.snow-leaf-1 { left: 8%;  width: 16px; opacity: 0.35; animation-duration: 17s; animation-delay: 0s; }
+.snow-leaf-2 { left: 28%; width: 20px; opacity: 0.45; animation-duration: 21s; animation-delay: 4s; }
+.snow-leaf-3 { left: 52%; width: 14px; opacity: 0.4;  animation-duration: 19s; animation-delay: 8s; }
+.snow-leaf-4 { left: 70%; width: 18px; opacity: 0.4;  animation-duration: 23s; animation-delay: 2s; }
+.snow-leaf-5 { left: 85%; width: 20px; opacity: 0.35; animation-duration: 20s; animation-delay: 11s; }
+.snow-leaf-6 { left: 40%; width: 15px; opacity: 0.4;  animation-duration: 25s; animation-delay: 6s; }
+
+@keyframes snowLeafFall {
+  0% {
+    transform: translateY(-10vh) translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(50vh) translateX(14px) rotate(90deg);
+  }
+  100% {
+    transform: translateY(112vh) translateX(-10px) rotate(180deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .snow-leaves {
+    display: none;
+  }
+}

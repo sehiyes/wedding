@@ -27,7 +27,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=22" />
+<link rel="stylesheet" href="css/style.css?v=23" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -728,6 +728,16 @@
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
+
+<!-- 잎사귀가 눈처럼 잔잔하게 떨어지는 효과 (화면 전체에 얇게 깔림, 클릭 방해 안 함) -->
+<div class="snow-leaves" aria-hidden="true">
+  <img class="snow-leaf snow-leaf-1" src="images/deco/intro-leaf-r4.png" alt="" loading="lazy" />
+  <img class="snow-leaf snow-leaf-2" src="images/deco/intro-leaf-l4.png" alt="" loading="lazy" />
+  <img class="snow-leaf snow-leaf-3" src="images/deco/intro-leaf-l7.png" alt="" loading="lazy" />
+  <img class="snow-leaf snow-leaf-4" src="images/deco/intro-leaf-r4.png" alt="" loading="lazy" />
+  <img class="snow-leaf snow-leaf-5" src="images/deco/intro-leaf-l4.png" alt="" loading="lazy" />
+  <img class="snow-leaf snow-leaf-6" src="images/deco/intro-leaf-l7.png" alt="" loading="lazy" />
+</div>
 
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=wv2gozzbgj" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
