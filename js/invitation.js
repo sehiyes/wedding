@@ -616,7 +616,22 @@ function initIntroStage() {
     infoEl.appendChild(document.createTextNode("2027.04.18(일) 오전 11시"));
     infoEl.appendChild(document.createElement("br"));
     infoEl.appendChild(document.createTextNode("로프트가든344"));
+    infoEl.appendChild(document.createElement("br"));
+    infoEl.appendChild(document.createTextNode("10F 메인홀"));
   }
+}
+
+/* ---------------------------------------------------------
+   첫 화면 "지도 바로가기" - 클릭 시 오시는 길 섹션으로 부드럽게 스크롤
+--------------------------------------------------------- */
+function initIntroMapLink() {
+  const link = document.querySelector(".intro-map-link");
+  const target = document.getElementById("sec-map");
+  if (!link || !target) return;
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
 }
 
 /* ---------------------------------------------------------
@@ -1134,4 +1149,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initStoryTimeline();
   initMusicButtonOverlapGuard();
   initShareButtons();
+  initIntroMapLink();
 });
