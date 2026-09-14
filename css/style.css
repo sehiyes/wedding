@@ -2314,9 +2314,9 @@ input:focus-visible,
 }
 
 /* ===== ONLY: 잎사귀가 눈처럼 잔잔하게 떨어지는 배경 효과
-   (intro-leaf-r4/l4/l7 세 장, 작게+반투명+아주 천천히, 우수수 쏟아지지
-   않도록 개수는 6개로 제한하고 지속시간을 길게(16~24초) + 시작 시점을
-   서로 다르게 어긋나게 둠) ===== */
+   (intro-leaf-r4/l4/l7 세 장, 작게+반투명, 10개로 조금 늘리고
+   속도도 조금 빠르게(11~16초) - 그래도 우수수 쏟아지는 느낌은 안 나게
+   시작 시점을 서로 다르게 어긋나게 둠) ===== */
 .snow-leaves {
   position: fixed;
   inset: 0;
@@ -2331,12 +2331,16 @@ input:focus-visible,
   animation: snowLeafFall linear infinite;
   will-change: transform;
 }
-.snow-leaf-1 { left: 8%;  width: 16px; opacity: 0.35; animation-duration: 17s; animation-delay: 0s; }
-.snow-leaf-2 { left: 28%; width: 20px; opacity: 0.45; animation-duration: 21s; animation-delay: 4s; }
-.snow-leaf-3 { left: 52%; width: 14px; opacity: 0.4;  animation-duration: 19s; animation-delay: 8s; }
-.snow-leaf-4 { left: 70%; width: 18px; opacity: 0.4;  animation-duration: 23s; animation-delay: 2s; }
-.snow-leaf-5 { left: 85%; width: 20px; opacity: 0.35; animation-duration: 20s; animation-delay: 11s; }
-.snow-leaf-6 { left: 40%; width: 15px; opacity: 0.4;  animation-duration: 25s; animation-delay: 6s; }
+.snow-leaf-1 { left: 6%;  width: 16px; opacity: 0.35; animation-duration: 11s; animation-delay: 0s; }
+.snow-leaf-2 { left: 20%; width: 20px; opacity: 0.45; animation-duration: 14s; animation-delay: 2.5s; }
+.snow-leaf-3 { left: 34%; width: 14px; opacity: 0.4;  animation-duration: 12.5s; animation-delay: 5s; }
+.snow-leaf-4 { left: 48%; width: 18px; opacity: 0.4;  animation-duration: 15s; animation-delay: 1s; }
+.snow-leaf-5 { left: 60%; width: 20px; opacity: 0.35; animation-duration: 13s; animation-delay: 7s; }
+.snow-leaf-6 { left: 72%; width: 15px; opacity: 0.4;  animation-duration: 16s; animation-delay: 3.5s; }
+.snow-leaf-7 { left: 84%; width: 17px; opacity: 0.35; animation-duration: 12s; animation-delay: 6s; }
+.snow-leaf-8 { left: 14%; width: 19px; opacity: 0.4;  animation-duration: 14.5s; animation-delay: 9s; }
+.snow-leaf-9 { left: 55%; width: 15px; opacity: 0.45; animation-duration: 11.5s; animation-delay: 4s; }
+.snow-leaf-10 { left: 92%; width: 18px; opacity: 0.35; animation-duration: 13.5s; animation-delay: 8s; }
 
 @keyframes snowLeafFall {
   0% {
@@ -2354,4 +2358,18 @@ input:focus-visible,
   .snow-leaves {
     display: none;
   }
+}
+
+/* ===== ONLY: 첫 화면 "지도 바로가기" 작은 버튼
+   ("10F 메인홀" 텍스트 가로 폭보다 살짝만 큰 정도로 아주 작게) ===== */
+.intro-map-link {
+  display: table;
+  margin: 10px auto 0;
+  padding: 6px 16px;
+  border: 1px solid var(--ink-soft);
+  border-radius: 999px;
+  font-family: var(--font-section);
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+  text-align: center;
 }
