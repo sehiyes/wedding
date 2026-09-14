@@ -29,7 +29,7 @@ const WEDDING_INFO = {
   weddingDateDisplay: "2027년 4월 18일 일요일 오전 11시",
   weddingTime: "오전 11시",
 
-  weddingHall: "로프트가든 344",
+  weddingHall: "로프트가든344, 10층 메인홀",
   address: "서울 양천구 오목로 344 청학빌딩",
   addressDetail: "건물 주차 2시간 무료, 공영주차장 3시간 무료",
 
