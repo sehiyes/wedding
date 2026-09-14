@@ -146,9 +146,32 @@ async function renderMessages() {
   });
 
   // 가운데로 온 나무를 강조 표시(화살표 + 확대)하는 캐러셀 효과 갱신
+  centerGardenOnFirstTree();
   updateGardenActiveTree();
   // 이미지가 로드되며 레이아웃이 살짝 바뀔 수 있어 한 번 더 갱신
-  setTimeout(updateGardenActiveTree, 250);
+  setTimeout(() => {
+    centerGardenOnFirstTree();
+    updateGardenActiveTree();
+  }, 250);
+}
+
+/* ---------------------------------------------------------
+   정원 캐러셀 - 처음 로드됐을 때는 스크롤을 한 번도 안 해서
+   scroll-snap이 적용 안 된 상태라, 그대로 두면 나무가 정중앙이 아니라
+   살짝 오른쪽에 치우쳐 보임. 그래서 첫 번째 나무를 실제 위치 기준으로
+   계산해서 정확히 중앙으로 스크롤시켜줌
+--------------------------------------------------------- */
+function centerGardenOnFirstTree() {
+  const track = document.getElementById("messageList");
+  if (!track) return;
+  const first = track.querySelector(".tree");
+  if (!first) return;
+
+  const trackRect = track.getBoundingClientRect();
+  const firstRect = first.getBoundingClientRect();
+  const currentCenter = firstRect.left + firstRect.width / 2;
+  const targetCenter = trackRect.left + trackRect.width / 2;
+  track.scrollLeft += currentCenter - targetCenter;
 }
 
 /* ---------------------------------------------------------
