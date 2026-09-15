@@ -2373,3 +2373,11 @@ input:focus-visible,
   text-decoration: underline;
   text-underline-offset: 3px;
 }
+
+/* ===== ONLY: 토글 버튼들의 '⌄' 화살표 아이콘을 2배 크게 ===== */
+.chevron {
+  display: inline-block;
+  font-size: 2em;
+  line-height: 1;
+  vertical-align: middle;
+}
