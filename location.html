@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>예식장 위치로 이동 중…</title>
+  <meta name="robots" content="noindex,nofollow" />
+  <style>
+    html,body{height:100%;margin:0;background:#f7f4ee;color:#3f4039;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;}
+    body{display:grid;place-items:center;}
+    .box{text-align:center;padding:28px;}
+    .heart{font-size:28px;margin-bottom:12px;}
+    p{margin:0;line-height:1.7;font-size:14px;}
+    a{display:inline-block;margin-top:14px;color:inherit;}
+  </style>
+</head>
+<body>
+  <main class="box">
+    <div class="heart">♥</div>
+    <p>예식장 위치로 이동하고 있어요.</p>
+    <a id="fallback" href="https://kko.to/5Asc9FFPZc">지도가 열리지 않으면 여기를 눌러주세요.</a>
+  </main>
+  <script>
+    const kakaoMapUrl = "https://kko.to/5Asc9FFPZc";
+    document.getElementById("fallback").href = kakaoMapUrl;
+    window.location.replace(kakaoMapUrl);
+  </script>
+</body>
+</html>
