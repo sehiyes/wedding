@@ -113,7 +113,7 @@ async function renderMessages() {
 
   if (error) {
     console.error(error);
-    wrap.innerHTML = `<div class="message-empty">메시지를 불러오지 못했습니다.</div>`;
+    wrap.innerHTML = `<div class="message-empty">메시지를 불러오지 못했습니다.<br><small style="word-break:break-word;opacity:.75">${escapeHtml(error.message || "알 수 없는 오류")} (${escapeHtml(error.code || "no-code")})</small></div>`;
     return;
   }
 
