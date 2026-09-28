@@ -1787,21 +1787,20 @@ input:focus-visible,
   flex-direction: column;
   gap: 10px;
 }
-.share-btn-secondary {
-  margin-top: 8px;
-  opacity: 0.92;
-}
-
-.share-note {
-  margin: 10px 0 0;
-  font-size: 11px;
-  line-height: 1.6;
-  color: var(--ink-soft);
-  text-align: center;
-}
-
 .share-btn {
   margin-top: 0;
+}
+.kakao-share-btn {
+  margin-top: 0;
+}
+.share-hint {
+  margin: 0;
+  padding: 0 8px 2px;
+  color: var(--ink-soft);
+  font-family: var(--font-section);
+  font-size: 0.65rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 /* =========================================================
