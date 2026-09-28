@@ -56,6 +56,15 @@ const WEDDING_INFO = {
   longitude: "126.87549984005",
   tmapUrl: "",
 
+  // 카카오톡 공유 설정
+  // 카카오디벨로퍼스 앱의 JavaScript 키를 넣으세요.
+  // 비워두면 청첩장 자체는 정상 동작하고 카카오톡 공유 버튼만 안내 메시지를 보여줍니다.
+  kakaoJavascriptKey: "380f2f7f94782be201f927491944743d",
+
+  // 카카오톡에서 [위치 보기] 버튼을 눌렀을 때 이동할 주소입니다.
+  // 기본값은 같은 도메인의 location.html이며, 이 페이지가 kakaoMapUrl로 즉시 이동합니다.
+  kakaoShareLocationUrl: "https://sehiyes.github.io/wedding/location.html",
+
   // 카카오맵 정적 지도 이미지 (실제 지도 화면을 이미지로 보여줌)
   // 카카오맵(map.kakao.com, PC 웹)에서 웨딩홀 검색 → 지도 위 공유/내보내기 아이콘 →
   // "HTML 태그 복사" → 나오는 소스코드 안의 <img src="https://staticmap.kakao.com/..."> 주소를
