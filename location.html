@@ -6,119 +6,60 @@
   <meta name="theme-color" content="#fbfcf8">
   <title>오시는 길 - 로프트가든344</title>
   <style>
-    :root {
-      --ink: #5f7359;
-      --ink-dark: #52654d;
-      --line: #b7c5ae;
-      --bg: #fbfcf8;
-      --card: #ffffff;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: var(--bg);
-      color: var(--ink-dark);
-      font-family: -apple-system, BlinkMacSystemFont, "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
-      display: flex;
-      justify-content: center;
-      padding: 28px 18px calc(28px + env(safe-area-inset-bottom));
-    }
-    .wrap { width: min(100%, 430px); }
-    .card {
-      background: var(--card);
-      border: 1px solid #e2e8de;
-      border-radius: 22px;
-      padding: 30px 22px 24px;
-      box-shadow: 0 8px 30px rgba(92, 112, 83, 0.08);
-      text-align: center;
-    }
-    .eyebrow {
-      margin: 0 0 8px;
-      font-size: 11px;
-      letter-spacing: 2px;
-      color: #8a9a84;
-    }
-    h1 {
-      margin: 0;
-      font-size: 24px;
-      font-weight: 600;
-      color: var(--ink-dark);
-    }
-    .address {
-      margin: 12px 0 4px;
-      font-size: 14px;
-      line-height: 1.55;
-      color: #71816b;
-    }
-    .detail {
-      margin: 0 0 26px;
-      font-size: 12px;
-      line-height: 1.5;
-      color: #9aa695;
-    }
-    .guide-title {
-      margin: 0 0 12px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #6b7c65;
-    }
-    .map-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-    .map-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 10px 6px;
-      border-radius: 999px;
-      border: 1px solid #71866a;
-      background: #71866a;
-      color: #fff;
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 600;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .map-btn:active { transform: translateY(1px); }
-    .back {
-      display: inline-block;
-      margin-top: 20px;
-      color: #8a9785;
-      font-size: 12px;
-      text-decoration: none;
-    }
-    .note {
-      margin: 16px 4px 0;
-      font-size: 11px;
-      line-height: 1.55;
-      color: #a0aa9c;
-    }
-    @media (max-width: 340px) {
-      .map-buttons { grid-template-columns: 1fr; }
-    }
+    :root { --ink:#5f7359; --ink-dark:#52654d; --line:#dfe6db; --bg:#fbfcf8; --card:#fff; }
+    *{box-sizing:border-box;}
+    body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink-dark);font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo",sans-serif;display:flex;justify-content:center;padding:28px 18px calc(28px + env(safe-area-inset-bottom));}
+    .wrap{width:min(100%,430px);}
+    .card{background:var(--card);border:1px solid #e2e8de;border-radius:22px;padding:30px 22px 24px;box-shadow:0 8px 30px rgba(92,112,83,.08);}
+    .head{text-align:center;}
+    .eyebrow{margin:0 0 8px;font-size:11px;letter-spacing:2px;color:#8a9a84;}
+    h1{margin:0;font-size:24px;font-weight:600;color:var(--ink-dark);}
+    .address{margin:12px 0 24px;font-size:14px;line-height:1.55;color:#71816b;}
+    .section-title{margin:24px 0 10px;font-size:13px;font-weight:700;color:#6b7c65;}
+    .map-buttons{display:flex;flex-direction:column;gap:9px;}
+    .map-btn,.back{display:flex;align-items:center;justify-content:center;min-height:48px;padding:11px 14px;border-radius:999px;border:1px solid #71866a;background:#71866a;color:#fff;text-decoration:none;font-size:13px;font-weight:600;-webkit-tap-highlight-color:transparent;}
+    .map-btn:active,.back:active{transform:translateY(1px);}
+    .info{margin-top:22px;border-top:1px solid var(--line);padding-top:4px;text-align:left;}
+    .info-row{padding:14px 2px;border-bottom:1px solid #edf1ea;}
+    .info-row:last-child{border-bottom:0;}
+    .info-label{display:block;margin-bottom:6px;font-size:13px;font-weight:700;color:#657761;}
+    .info-text{margin:0;white-space:pre-line;font-size:12px;line-height:1.7;color:#778574;}
+    .back{margin-top:18px;background:#fff;color:#71816b;border-color:#b7c5ae;}
+    @media (max-width:340px){body{padding-left:14px;padding-right:14px}.card{padding-left:18px;padding-right:18px;}}
   </style>
 </head>
 <body>
   <main class="wrap">
     <section class="card" aria-labelledby="pageTitle">
-      <p class="eyebrow">WEDDING VENUE</p>
-      <h1 id="pageTitle">로프트가든344</h1>
-      <p class="address" id="address"></p>
-      <p class="detail" id="detail"></p>
+      <div class="head">
+        <p class="eyebrow">WEDDING VENUE</p>
+        <h1 id="pageTitle">로프트가든344</h1>
+        <p class="address" id="address"></p>
+      </div>
 
-      <p class="guide-title">길찾기 앱을 선택해주세요</p>
+      <p class="section-title">길찾기 앱을 선택해주세요</p>
       <div class="map-buttons">
         <a class="map-btn" id="btnKakao" target="_blank" rel="noopener noreferrer">카카오맵</a>
         <a class="map-btn" id="btnTmap">티맵</a>
         <a class="map-btn" id="btnNaver" target="_blank" rel="noopener noreferrer">네이버지도</a>
       </div>
 
-      <p class="note">모바일청첩장의 ‘오시는 길’에 설정된 장소 정보를 그대로 사용합니다.</p>
-      <a class="back" href="./">← 모바일청첩장으로 돌아가기</a>
+      <a class="back" href="./">모바일청첩장 보기</a>
+
+      <div class="info" aria-label="웨딩홀 교통 및 주차 정보">
+        <div class="info-row">
+          <span class="info-label">🚇 지하철</span>
+          <p class="info-text" id="subway"></p>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🚌 버스</span>
+          <p class="info-text" id="bus"></p>
+        </div>
+        <div class="info-row">
+          <span class="info-label">🚗 주차</span>
+          <p class="info-text" id="parking"></p>
+        </div>
+      </div>
     </section>
   </main>
 
@@ -129,12 +70,14 @@
       if (!info) return;
 
       document.title = `오시는 길 - ${info.weddingHall}`;
-      document.getElementById("pageTitle").textContent = info.weddingHall;
+      document.getElementById("pageTitle").textContent = info.weddingHall || "";
       document.getElementById("address").textContent = info.address || "";
-      document.getElementById("detail").textContent = info.addressDetail || "";
+      document.getElementById("subway").textContent = info.subway || "";
+      document.getElementById("bus").textContent = info.bus || "";
+      document.getElementById("parking").textContent = info.parking || "";
 
-      document.getElementById("btnKakao").href = info.kakaoMapUrl;
-      document.getElementById("btnNaver").href = info.naverMapUrl;
+      document.getElementById("btnKakao").href = info.kakaoMapUrl || "#";
+      document.getElementById("btnNaver").href = info.naverMapUrl || "#";
 
       function buildTmapUrl() {
         if (info.tmapUrl && info.tmapUrl.trim()) return info.tmapUrl.trim();
@@ -142,14 +85,12 @@
         if (info.latitude && info.longitude) {
           return `tmap://route?goalname=${name}&goalx=${info.longitude}&goaly=${info.latitude}`;
         }
-        return `tmap://route?rGoName=${encodeURIComponent(info.weddingHall || "예식장")}`;
+        return `tmap://route?rGoName=${name}`;
       }
 
       function getTmapStoreUrl() {
         const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-        return isIOS
-          ? "https://apps.apple.com/kr/app/id431589174"
-          : "https://play.google.com/store/apps/details?id=com.skt.tmap.ku";
+        return isIOS ? "https://apps.apple.com/kr/app/id431589174" : "https://play.google.com/store/apps/details?id=com.skt.tmap.ku";
       }
 
       const tmapBtn = document.getElementById("btnTmap");
@@ -157,9 +98,7 @@
       tmapBtn.addEventListener("click", function () {
         const clickedAt = Date.now();
         setTimeout(function () {
-          if (!document.hidden && Date.now() - clickedAt < 2000) {
-            window.location.href = getTmapStoreUrl();
-          }
+          if (!document.hidden && Date.now() - clickedAt < 2000) window.location.href = getTmapStoreUrl();
         }, 1200);
       });
     })();
