@@ -649,13 +649,13 @@
 
       <!-- 청첩장 공유하기 -->
       <div class="share-entry">
-        <button type="button" class="btn-submit share-btn" id="btnKakaoShare">
+        <button type="button" class="btn-submit share-btn kakao-share-btn" id="btnKakaoShare">
           <span>💬 카카오톡으로 청첩장 보내기</span>
         </button>
-        <button type="button" class="btn-submit share-btn share-btn-secondary" id="btnCopyLink">
+        <button type="button" class="btn-submit share-btn" id="btnCopyLink">
           <span>🔗 청첩장 링크 복사</span>
         </button>
-        <p class="share-note">카카오톡 공유 시 <b>모바일청첩장</b>과 <b>위치 보기</b> 버튼이 함께 전송됩니다.</p>
+        <p class="share-hint">카카오톡 공유 시 모바일청첩장과 위치 보기 버튼이 함께 전송됩니다.</p>
       </div>
 
       <p class="footer-mark">✿ Thank you ✿</p>
@@ -752,9 +752,10 @@
   <img class="snow-leaf snow-leaf-10" src="images/deco/intro-leaf-r4.png" alt="" loading="lazy" />
 </div>
 
+<!-- 카카오톡 공유 SDK: Supabase 스크립트/초기화 순서는 기존 그대로 유지 -->
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" integrity="sha384-zt/G7/KfaRQ9dT/QIkS0ujMtzouJqzuSJcXVQu50x0rl/+mD1dc70AeOejVbMD9E" crossorigin="anonymous"></script>
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=wv2gozzbgj" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
-<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous" defer></script>
 <script src="js/config.js" defer></script>
 <script src="js/supabase-client.js" defer></script>
 <script src="js/main.js" defer></script>
