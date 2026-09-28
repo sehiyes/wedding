@@ -639,6 +639,7 @@ function initIntroMapLink() {
 --------------------------------------------------------- */
 function initShareButtons() {
   const copyBtn = document.getElementById("btnCopyLink");
+  const kakaoBtn = document.getElementById("btnKakaoShare");
 
   if (copyBtn) {
     copyBtn.addEventListener("click", () => {
@@ -650,6 +651,71 @@ function initShareButtons() {
       }
       if (typeof showToast === "function") {
         showToast("청첩장 링크가 복사되었습니다.");
+      }
+    });
+  }
+
+  if (kakaoBtn) {
+    kakaoBtn.addEventListener("click", () => {
+      const key = (typeof WEDDING_INFO !== "undefined" && WEDDING_INFO.kakaoJavascriptKey)
+        ? WEDDING_INFO.kakaoJavascriptKey.trim()
+        : "";
+
+      if (!key) {
+        if (typeof showToast === "function") {
+          showToast("카카오디벨로퍼스 JavaScript 키를 먼저 설정해주세요.");
+        }
+        return;
+      }
+
+      if (!window.Kakao || !Kakao.Share) {
+        if (typeof showToast === "function") {
+          showToast("카카오톡 공유 기능을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
+        }
+        return;
+      }
+
+      try {
+        if (!Kakao.isInitialized()) Kakao.init(key);
+
+        const pageUrl = window.location.origin + window.location.pathname;
+        const locationUrl = WEDDING_INFO.kakaoShareLocationUrl ||
+          (window.location.origin + "/location.html");
+        const imageUrl = window.location.origin + "/images/deco/og-image.jpg";
+
+        Kakao.Share.sendDefault({
+          objectType: "feed",
+          content: {
+            title: `${WEDDING_INFO.weddingDateDisplay} · ${WEDDING_INFO.groomName} ♥ ${WEDDING_INFO.brideName}`,
+            description: `${WEDDING_INFO.groomName} ♥ ${WEDDING_INFO.brideName}의 결혼식에 초대합니다.`,
+            imageUrl,
+            link: {
+              mobileWebUrl: pageUrl,
+              webUrl: pageUrl,
+            },
+          },
+          buttons: [
+            {
+              title: "모바일청첩장",
+              link: {
+                mobileWebUrl: pageUrl,
+                webUrl: pageUrl,
+              },
+            },
+            {
+              title: "위치 보기",
+              link: {
+                mobileWebUrl: locationUrl,
+                webUrl: locationUrl,
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        console.error("[wedding] Kakao Talk Share failed", error);
+        if (typeof showToast === "function") {
+          showToast("카카오톡 공유에 실패했습니다. 설정을 확인해주세요.");
+        }
       }
     });
   }
