@@ -649,9 +649,13 @@
 
       <!-- 청첩장 공유하기 -->
       <div class="share-entry">
-        <button type="button" class="btn-submit share-btn" id="btnCopyLink">
+        <button type="button" class="btn-submit share-btn" id="btnKakaoShare">
+          <span>💬 카카오톡으로 청첩장 보내기</span>
+        </button>
+        <button type="button" class="btn-submit share-btn share-btn-secondary" id="btnCopyLink">
           <span>🔗 청첩장 링크 복사</span>
         </button>
+        <p class="share-note">카카오톡 공유 시 <b>모바일청첩장</b>과 <b>위치 보기</b> 버튼이 함께 전송됩니다.</p>
       </div>
 
       <p class="footer-mark">✿ Thank you ✿</p>
@@ -750,6 +754,7 @@
 
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=wv2gozzbgj" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+<script src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.2/kakao.min.js" crossorigin="anonymous" defer></script>
 <script src="js/config.js" defer></script>
 <script src="js/supabase-client.js" defer></script>
 <script src="js/main.js" defer></script>
