@@ -49,21 +49,15 @@ const WEDDING_INFO = {
   // 카카오맵 "바로가기" 버튼 + 지도 이미지 클릭 시 이동할 정확한 위치 링크
   kakaoMapUrl: "https://kko.to/5Asc9FFPZc",
 
+  // 카카오톡 공유 - 카카오디벨로퍼스의 JavaScript 키
+  kakaoJavascriptKey: "380f2f7f94782be201f927491944743d",
+
   // 티맵 "바로가기" - 아래 latitude/longitude를 채우면 정확한 길안내 링크가
   // 자동으로 만들어집니다. (둘 다 비워두면 이름만으로 열리는 링크를 사용합니다)
   // tmapUrl에 직접 링크를 넣으면 그 값이 최우선으로 사용됩니다.
   latitude: "37.524225996587",
   longitude: "126.87549984005",
   tmapUrl: "",
-
-  // 카카오톡 공유 설정
-  // 카카오디벨로퍼스 앱의 JavaScript 키를 넣으세요.
-  // 비워두면 청첩장 자체는 정상 동작하고 카카오톡 공유 버튼만 안내 메시지를 보여줍니다.
-  kakaoJavascriptKey: "380f2f7f94782be201f927491944743d",
-
-  // 카카오톡에서 [위치 보기] 버튼을 눌렀을 때 이동할 주소입니다.
-  // 기본값은 같은 도메인의 location.html이며, 이 페이지가 kakaoMapUrl로 즉시 이동합니다.
-  kakaoShareLocationUrl: "https://sehiyes.github.io/wedding/location.html",
 
   // 카카오맵 정적 지도 이미지 (실제 지도 화면을 이미지로 보여줌)
   // 카카오맵(map.kakao.com, PC 웹)에서 웨딩홀 검색 → 지도 위 공유/내보내기 아이콘 →
