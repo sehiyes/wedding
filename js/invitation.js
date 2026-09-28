@@ -655,70 +655,73 @@ function initShareButtons() {
     });
   }
 
-  if (kakaoBtn) {
-    kakaoBtn.addEventListener("click", () => {
-      const key = (typeof WEDDING_INFO !== "undefined" && WEDDING_INFO.kakaoJavascriptKey)
-        ? WEDDING_INFO.kakaoJavascriptKey.trim()
-        : "";
+  if (!kakaoBtn) return;
 
-      if (!key) {
-        if (typeof showToast === "function") {
-          showToast("카카오디벨로퍼스 JavaScript 키를 먼저 설정해주세요.");
-        }
-        return;
+  const initKakao = () => {
+    if (typeof window.Kakao === "undefined") return false;
+    if (!WEDDING_INFO.kakaoJavascriptKey) return false;
+
+    try {
+      if (!window.Kakao.isInitialized()) {
+        window.Kakao.init(WEDDING_INFO.kakaoJavascriptKey);
       }
+      return window.Kakao.isInitialized();
+    } catch (err) {
+      console.error("[wedding] Kakao SDK 초기화 실패", err);
+      return false;
+    }
+  };
 
-      if (!window.Kakao || !Kakao.Share) {
-        if (typeof showToast === "function") {
-          showToast("카카오톡 공유 기능을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
-        }
-        return;
+  const shareKakao = () => {
+    if (!initKakao()) {
+      if (typeof showToast === "function") {
+        showToast("카카오톡 공유 기능을 불러오지 못했습니다. 잠시 후 다시 시도해주세요.");
       }
+      return;
+    }
 
-      try {
-        if (!Kakao.isInitialized()) Kakao.init(key);
+    const weddingUrl = new URL("index.html", window.location.href).href;
+    const locationUrl = new URL("location.html", window.location.href).href;
+    const imageUrl = new URL("images/deco/og-image.jpg", window.location.href).href;
 
-        const pageUrl = window.location.origin + window.location.pathname;
-        const locationUrl = WEDDING_INFO.kakaoShareLocationUrl ||
-          (window.location.origin + "/location.html");
-        const imageUrl = window.location.origin + "/images/deco/og-image.jpg";
-
-        Kakao.Share.sendDefault({
-          objectType: "feed",
-          content: {
-            title: `${WEDDING_INFO.weddingDateDisplay} · ${WEDDING_INFO.groomName} ♥ ${WEDDING_INFO.brideName}`,
-            description: `${WEDDING_INFO.groomName} ♥ ${WEDDING_INFO.brideName}의 결혼식에 초대합니다.`,
-            imageUrl,
+    try {
+      window.Kakao.Share.sendDefault({
+        objectType: "feed",
+        content: {
+          title: `${WEDDING_INFO.groomName} ♥ ${WEDDING_INFO.brideName} 결혼합니다`,
+          description: `${WEDDING_INFO.weddingDateDisplay}\n${WEDDING_INFO.weddingHall}`,
+          imageUrl,
+          link: {
+            webUrl: weddingUrl,
+            mobileWebUrl: weddingUrl,
+          },
+        },
+        buttons: [
+          {
+            title: "모바일청첩장",
             link: {
-              mobileWebUrl: pageUrl,
-              webUrl: pageUrl,
+              webUrl: weddingUrl,
+              mobileWebUrl: weddingUrl,
             },
           },
-          buttons: [
-            {
-              title: "모바일청첩장",
-              link: {
-                mobileWebUrl: pageUrl,
-                webUrl: pageUrl,
-              },
+          {
+            title: "위치 보기",
+            link: {
+              webUrl: locationUrl,
+              mobileWebUrl: locationUrl,
             },
-            {
-              title: "위치 보기",
-              link: {
-                mobileWebUrl: locationUrl,
-                webUrl: locationUrl,
-              },
-            },
-          ],
-        });
-      } catch (error) {
-        console.error("[wedding] Kakao Talk Share failed", error);
-        if (typeof showToast === "function") {
-          showToast("카카오톡 공유에 실패했습니다. 설정을 확인해주세요.");
-        }
+          },
+        ],
+      });
+    } catch (err) {
+      console.error("[wedding] Kakao Talk Share 실패", err);
+      if (typeof showToast === "function") {
+        showToast("카카오톡 공유에 실패했습니다. 카카오 설정을 확인해주세요.");
       }
-    });
-  }
+    }
+  };
+
+  kakaoBtn.addEventListener("click", shareKakao);
 }
 
 /* ---------------------------------------------------------
