@@ -515,29 +515,52 @@ input:focus-visible,
   transform: scale(1.12);
 }
 
-/* 포토부스 카드 + 좌우 화살표 */
+/* 사진 섹션은 사진을 최대한 크게 보여주기 위해 좌우 여백을 좁게 */
+#sec-gallery {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* 포토부스 카드 + 좌우 화살표 (화살표는 카드 가장자리에 동그란 버튼으로 떠있음) */
 .photobooth-wrap {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2px;
+  width: 100%;
 }
 .photobooth-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  width: 34px;
+  height: 44px;
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: transparent;
   border: none;
-  color: var(--ink-soft);
-  font-size: 2rem;
+  border-radius: 0;
+  color: #1a1a1a;
+  font-size: 1.7rem;
+  font-weight: 200;
   line-height: 1;
-  padding: 10px 6px;
+  padding: 0;
   cursor: pointer;
-  transition: opacity 0.2s var(--ease);
+  box-shadow: none;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
 }
-.photobooth-nav:active { opacity: 0.55; }
+.photobooth-nav:active { opacity: 0.5; transform: translateY(-50%) scale(0.9); }
 .photobooth-nav:disabled { opacity: 0.25; cursor: default; }
+.photobooth-prev { left: -2px; }
+.photobooth-next { right: -2px; }
 .photobooth-viewport {
-  flex: 0 1 300px;
-  max-width: 300px;
+  flex: 1 1 auto;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
   overflow: hidden;
 }
 .photobooth-track {

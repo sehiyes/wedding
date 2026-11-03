@@ -31,7 +31,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=30" />
+<link rel="stylesheet" href="css/style.css?v=34" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -427,13 +427,13 @@
         </div>
 
         <div class="photobooth-wrap" id="photoboothWrap" data-frame-type="minimal">
-          <button type="button" class="photobooth-nav photobooth-prev" id="photoboothPrev" aria-label="이전 사진">‹</button>
+          <button type="button" class="photobooth-nav photobooth-prev" id="photoboothPrev" aria-label="이전 사진">&lt;</button>
 
           <div class="photobooth-viewport">
             <div class="photobooth-track" id="photoboothTrack"><!-- js/gallery.js가 "컷" 카드를 채워 넣습니다 --></div>
           </div>
 
-          <button type="button" class="photobooth-nav photobooth-next" id="photoboothNext" aria-label="다음 사진">›</button>
+          <button type="button" class="photobooth-nav photobooth-next" id="photoboothNext" aria-label="다음 사진">&gt;</button>
         </div>
 
         <p class="photobooth-page-hint" id="photoboothPageHint"></p>
