@@ -31,7 +31,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=34" />
+<link rel="stylesheet" href="css/style.css?v=35" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -421,19 +421,17 @@
         <!-- 프레임 선택: 버튼을 누르면 프레임 디자인이 통째로 바뀜 (js/gallery.js의 FRAME_STYLES 참고) -->
         <div class="frame-selector" id="frameSelector" role="tablist" aria-label="프레임 선택">
           <button type="button" class="frame-swatch is-active" data-frame="minimal" style="--swatch-color:#efece4; --swatch-ink:#41483d;" aria-pressed="true" aria-label="미니멀 프레임 (기본)"></button>
-          <button type="button" class="frame-swatch" data-frame="doodle-green" style="--swatch-color:#33503a; --swatch-ink:#ffffff;" aria-pressed="false" aria-label="그린 하트 도들 프레임"></button>
           <button type="button" class="frame-swatch" data-frame="pastel-cute" style="--swatch-color:#d7f0c0; --swatch-ink:#ff5fa2;" aria-pressed="false" aria-label="파스텔 큐트 프레임"></button>
-          <button type="button" class="frame-swatch" data-frame="pink-sticker" style="--swatch-color:#e8236f; --swatch-ink:#ffffff;" aria-pressed="false" aria-label="핑크 스티커 프레임"></button>
         </div>
 
         <div class="photobooth-wrap" id="photoboothWrap" data-frame-type="minimal">
-          <button type="button" class="photobooth-nav photobooth-prev" id="photoboothPrev" aria-label="이전 사진">&lt;</button>
+          <button type="button" class="photobooth-nav photobooth-prev" id="photoboothPrev" aria-label="이전 사진"></button>
 
           <div class="photobooth-viewport">
             <div class="photobooth-track" id="photoboothTrack"><!-- js/gallery.js가 "컷" 카드를 채워 넣습니다 --></div>
           </div>
 
-          <button type="button" class="photobooth-nav photobooth-next" id="photoboothNext" aria-label="다음 사진">&gt;</button>
+          <button type="button" class="photobooth-nav photobooth-next" id="photoboothNext" aria-label="다음 사진"></button>
         </div>
 
         <p class="photobooth-page-hint" id="photoboothPageHint"></p>

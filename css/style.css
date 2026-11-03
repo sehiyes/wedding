@@ -509,7 +509,6 @@ input:focus-visible,
 }
 .frame-swatch[data-frame="minimal"]::after { content: "＋"; font-size: 0.46rem; }
 .frame-swatch[data-frame="pastel-cute"]::after { content: "✦"; }
-.frame-swatch[data-frame="pink-sticker"]::after { content: "♥"; }
 .frame-swatch.is-active {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px var(--swatch-color, var(--ink)), 0 1px 3px rgba(51, 48, 41, 0.22);
   transform: scale(1.12);
@@ -521,45 +520,45 @@ input:focus-visible,
   padding-right: 10px;
 }
 
-/* 포토부스 카드 + 좌우 화살표 (화살표는 카드 가장자리에 동그란 버튼으로 떠있음) */
+/* 포토부스 카드 + 좌우 화살표
+   (화살표는 사진/프레임과 겹치지 않도록 바깥쪽에 여백을 두고 떨어져 있고,
+   두께는 미니멀 프레임의 + 표시 정도로 아주 얇게) */
 .photobooth-wrap {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
+  gap: 6px;
 }
 .photobooth-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 5;
-  width: 34px;
-  height: 44px;
   flex: 0 0 auto;
+  width: 20px;
+  height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
   background: transparent;
   border: none;
-  border-radius: 0;
-  color: #1a1a1a;
-  font-size: 1.7rem;
-  font-weight: 200;
-  line-height: 1;
   padding: 0;
   cursor: pointer;
-  box-shadow: none;
   transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
 }
-.photobooth-nav:active { opacity: 0.5; transform: translateY(-50%) scale(0.9); }
+.photobooth-nav::before {
+  content: "";
+  display: block;
+  width: 9px;
+  height: 9px;
+  border: solid #1a1a1a;
+  border-width: 0 0 1.2px 1.2px;
+}
+.photobooth-prev::before { transform: rotate(45deg); }
+.photobooth-next::before { transform: rotate(-135deg); }
+.photobooth-nav:active { opacity: 0.5; transform: scale(0.9); }
 .photobooth-nav:disabled { opacity: 0.25; cursor: default; }
-.photobooth-prev { left: -2px; }
-.photobooth-next { right: -2px; }
 .photobooth-viewport {
   flex: 1 1 auto;
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -616,7 +615,7 @@ input:focus-visible,
 }
 
 /* =========================================================
-   프레임 1 / 2 / 4. minimal · doodle-green · pink-sticker
+   프레임: minimal · pastel-cute
    - 보내주신 레퍼런스 이미지를 배경 투명화한 실제 PNG를 그대로 사용합니다.
    - 사진 4장이 PNG 뒤에 깔리고, PNG의 투명해진 "창" 자리로 사진이 비쳐 보입니다.
    ========================================================= */
@@ -641,8 +640,6 @@ input:focus-visible,
   pointer-events: none;
   z-index: 2;
 }
-/* doodle-green 하트 창은 살짝 둥글게 */
-.photobooth-card--doodle-green .overlay-slot { border-radius: 6px; }
 /* pastel-cute 모자이크 창도 살짝 둥글게 */
 .photobooth-card--pastel-cute .overlay-slot { border-radius: 8px; }
 

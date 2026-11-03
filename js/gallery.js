@@ -14,56 +14,37 @@
 
 const FRAME_STYLES = {
   "minimal": {},
-  "doodle-green": {},
   "pastel-cute": {},
-  "pink-sticker": {},
 };
 const DEFAULT_FRAME = "minimal";
 let currentFrame = DEFAULT_FRAME;
 
-/* minimal / doodle-green / pink-sticker는 실제 보내주신 레퍼런스 이미지를
-   배경 투명화한 PNG를 그대로 오버레이로 사용합니다 (images/deco/gallery-frame-*.png).
-   사진은 그 뒤에 깔리고, 투명해진 "창" 자리로 사진이 비쳐 보입니다.
-   FRAME_WINDOWS 좌표는 각 PNG에서 투명한 사각형(하트) 구멍의 위치를
-   퍼센트(이미지 가로/세로 대비 비율)로 분석해서 뽑아낸 값입니다. */
+/* 실제 보내주신 레퍼런스 이미지를 배경 투명화한 PNG를 그대로 오버레이로 사용합니다
+   (images/deco/gallery-frame-*.png). 사진은 그 뒤에 깔리고, 투명해진 "창" 자리로
+   사진이 비쳐 보입니다. FRAME_WINDOWS 좌표는 각 PNG에서 투명한 사각형 구멍의
+   위치를 퍼센트(이미지 가로/세로 대비 비율)로 분석해서 뽑아낸 값입니다. */
 const FRAME_IMAGE = {
   "minimal": "images/deco/gallery-frame-minimal.png",
-  "doodle-green": "images/deco/gallery-frame-doodle-green.png",
   "pastel-cute": "images/deco/gallery-frame-pastel-cute.png",
-  "pink-sticker": "images/deco/gallery-frame-pink-sticker.png",
 };
 const FRAME_ASPECT = {
   "minimal": "700 / 989",
-  "doodle-green": "700 / 989",
   "pastel-cute": "700 / 1050",
-  "pink-sticker": "700 / 990",
 };
 /* 각 프레임당 4칸. pastel-cute는 레퍼런스 이미지가 2x2 격자가 아니라
    살짝 어긋난 모자이크 배치라 칸마다 크기가 조금씩 달라요 */
 const FRAME_WINDOWS = {
   "minimal": [
-    { x: 3.43, y: 6.27, w: 46.14, h: 44.29 },
-    { x: 50.14, y: 6.27, w: 46.29, h: 44.29 },
-    { x: 3.43, y: 50.96, w: 46.14, h: 44.39 },
-    { x: 50.14, y: 50.96, w: 46.29, h: 44.39 },
-  ],
-  "doodle-green": [
-    { x: 8.06, y: 27.3, w: 39.53, h: 25.62 },
-    { x: 52.23, y: 27.16, w: 39.62, h: 25.96 },
-    { x: 8.82, y: 60.83, w: 38.77, h: 25.89 },
-    { x: 51.18, y: 60.7, w: 39.34, h: 26.49 },
+    { x: 10.00, y: 9.00, w: 39.57, h: 41.46 },
+    { x: 50.14, y: 9.00, w: 39.86, h: 41.46 },
+    { x: 10.00, y: 51.06, w: 39.57, h: 43.88 },
+    { x: 50.14, y: 51.06, w: 39.86, h: 43.88 },
   ],
   "pastel-cute": [
     { x: 5.37, y: 18.29, w: 41.31, h: 39.0 },
     { x: 53.22, y: 7.29, w: 41.5, h: 33.66 },
     { x: 5.37, y: 59.51, w: 41.31, h: 33.33 },
     { x: 53.22, y: 46.42, w: 41.5, h: 28.71 },
-  ],
-  "pink-sticker": [
-    { x: 6.93, y: 14.34, w: 30.27, h: 34.18 },
-    { x: 40.51, y: 14.34, w: 31.21, h: 34.18 },
-    { x: 6.93, y: 51.47, w: 30.17, h: 36.8 },
-    { x: 40.51, y: 51.27, w: 31.21, h: 37.0 },
   ],
 };
 
