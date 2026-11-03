@@ -20,6 +20,10 @@
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 <link rel="preconnect" href="https://fontzip.co.kr" crossorigin />
 <link rel="dns-prefetch" href="https://fontzip.co.kr" />
+<!-- 갤러리 하트 프레임 안 "JY&SH" 필기체(손글씨 느낌) 전용 폰트 -->
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" />
 <!-- 폰트를 남들보다 먼저(우선순위 높게) 받아와서, 로딩 중 기본 폰트가 잠깐 보이는 시간을 줄임 -->
 <link rel="preload" href="fonts/wedding-font/NanumNeuRisNeuRisCeR.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="fonts/title-font/THE_Nakseo.woff2" as="font" type="font/woff2" crossorigin />
@@ -27,7 +31,7 @@
      (렌더링 차단 방식이었을 때 이 폰트 하나 때문에 전체 화면이 늦게 뜰 수 있음) -->
 <link rel="preload" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
 <noscript><link rel="stylesheet" href="https://fontzip.co.kr/webfonts/nanum-sinhonbubu.css" /></noscript>
-<link rel="stylesheet" href="css/style.css?v=27" />
+<link rel="stylesheet" href="css/style.css?v=30" />
 <!-- 자바스크립트가 아예 실행되지 못하는 경우에도(파일 경로 오류 등) 내용이
      투명하게 숨어있지 않고 항상 보이도록 하는 안전장치 -->
 <noscript>
@@ -408,23 +412,43 @@
         <p class="story-hint" aria-hidden="true" style="display:none;"></p>
       </section>
 
-      <!-- 03. 사진 -->
-      <section class="section prep-section" id="sec-gallery">
+      <!-- 03. 사진 (인생네컷 스타일 포토부스 갤러리) -->
+      <section class="section" id="sec-gallery">
         <img class="doodle-divider section-divider" src="images/deco/heart-divider.png" alt="" loading="lazy" />
         <h2 class="section-title">우리의 순간</h2>
         <p class="section-sub">Gallery</p>
 
-        <div class="prep-copy fontzip-nanum-sinhonbubu">
-          <p>조만간 촬영 예정 입니다!</p>
-          <p>10월 3일에요! (tmi ㅎㅎㅎ)</p>
-          <p>포즈 열심히 연습해서,</p>
-          <p>이쁘게 찍어 올게요 ~\_&lt;🤍</p>
-
-          <p class="prep-coming">- coming soon -</p>
+        <!-- 프레임 선택: 버튼을 누르면 프레임 디자인이 통째로 바뀜 (js/gallery.js의 FRAME_STYLES 참고) -->
+        <div class="frame-selector" id="frameSelector" role="tablist" aria-label="프레임 선택">
+          <button type="button" class="frame-swatch is-active" data-frame="minimal" style="--swatch-color:#efece4; --swatch-ink:#41483d;" aria-pressed="true" aria-label="미니멀 프레임 (기본)"></button>
+          <button type="button" class="frame-swatch" data-frame="doodle-green" style="--swatch-color:#33503a; --swatch-ink:#ffffff;" aria-pressed="false" aria-label="그린 하트 도들 프레임"></button>
+          <button type="button" class="frame-swatch" data-frame="pastel-cute" style="--swatch-color:#d7f0c0; --swatch-ink:#ff5fa2;" aria-pressed="false" aria-label="파스텔 큐트 프레임"></button>
+          <button type="button" class="frame-swatch" data-frame="pink-sticker" style="--swatch-color:#e8236f; --swatch-ink:#ffffff;" aria-pressed="false" aria-label="핑크 스티커 프레임"></button>
         </div>
 
-        <div class="gallery-track" id="galleryGrid" aria-hidden="true" style="display:none;"></div>
-        <p class="gallery-hint" aria-hidden="true" style="display:none;"></p>
+        <div class="photobooth-wrap" id="photoboothWrap" data-frame-type="minimal">
+          <button type="button" class="photobooth-nav photobooth-prev" id="photoboothPrev" aria-label="이전 사진">‹</button>
+
+          <div class="photobooth-viewport">
+            <div class="photobooth-track" id="photoboothTrack"><!-- js/gallery.js가 "컷" 카드를 채워 넣습니다 --></div>
+          </div>
+
+          <button type="button" class="photobooth-nav photobooth-next" id="photoboothNext" aria-label="다음 사진">›</button>
+        </div>
+
+        <p class="photobooth-page-hint" id="photoboothPageHint"></p>
+
+        <button type="button" class="view-all-btn" id="viewAllBtn">전체보기</button>
+
+        <div class="view-all-panel" id="viewAllPanel">
+          <div class="view-all-panel__sheet">
+            <div class="view-all-panel__header">
+              <p class="view-all-panel__title">우리의 순간 · 전체보기</p>
+              <button type="button" class="view-all-panel__close" id="viewAllClose" aria-label="닫기">✕</button>
+            </div>
+            <div class="view-all-panel__grid" id="viewAllGrid"></div>
+          </div>
+        </div>
       </section>
 
       <!-- 04. 달력 & D-DAY -->
