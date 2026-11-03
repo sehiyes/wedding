@@ -472,45 +472,232 @@ input:focus-visible,
 }
 
 /* ---------------------------------------------------------
-   8. Section 03 - 사진 (갤러리 + 라이트박스)
+   8. Section 03 - 사진 (인생네컷 포토부스 갤러리 + 라이트박스)
 --------------------------------------------------------- */
-.gallery-track {
+
+/* 프레임 선택 스와치: 섹션 제목 바로 아래 - 4가지 프레임 디자인을 통째로 전환
+   (작고 동글동글 귀엽게) */
+.frame-selector {
   display: flex;
-  gap: 16px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  padding: 10px 4px 18px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  justify-content: center;
+  align-items: center;
+  gap: 9px;
+  margin: 2px 0 20px;
 }
-.gallery-track::-webkit-scrollbar {
-  display: none;
+.frame-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1.5px solid #ffffff;
+  background: var(--swatch-color, var(--accent-sage));
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  box-shadow: 0 1px 3px rgba(51, 48, 41, 0.22);
 }
-.gallery-card {
-  flex: 0 0 62%;
-  scroll-snap-align: center;
-  aspect-ratio: 3 / 4;
-  border-radius: 16px;
+.frame-swatch::after {
+  content: "♥";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--swatch-ink, #fff);
+  font-size: 0.5rem;
+  line-height: 1;
+}
+.frame-swatch[data-frame="minimal"]::after { content: "＋"; font-size: 0.46rem; }
+.frame-swatch[data-frame="pastel-cute"]::after { content: "✦"; }
+.frame-swatch[data-frame="pink-sticker"]::after { content: "♥"; }
+.frame-swatch.is-active {
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 3.5px var(--swatch-color, var(--ink)), 0 1px 3px rgba(51, 48, 41, 0.22);
+  transform: scale(1.12);
+}
+
+/* 포토부스 카드 + 좌우 화살표 */
+.photobooth-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+.photobooth-nav {
+  flex: 0 0 auto;
+  background: transparent;
+  border: none;
+  color: var(--ink-soft);
+  font-size: 2rem;
+  line-height: 1;
+  padding: 10px 6px;
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease);
+}
+.photobooth-nav:active { opacity: 0.55; }
+.photobooth-nav:disabled { opacity: 0.25; cursor: default; }
+.photobooth-viewport {
+  flex: 0 1 300px;
+  max-width: 300px;
   overflow: hidden;
-  background: var(--line-soft);
-  box-shadow: var(--card-shadow);
-  transform: rotate(var(--gallery-rotate, 0deg));
 }
-.gallery-card img {
+.photobooth-track {
+  display: flex;
+  transition: transform 0.45s var(--ease);
+}
+
+/* ===== 공통 카드 틀 ===== */
+.photobooth-card {
+  flex: 0 0 100%;
+  border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  padding: 22px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.photobooth-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.photobooth-slot {
+  aspect-ratio: 3 / 4.2;
+  overflow: hidden;
+  background: #eceae3;
+  position: relative;
+}
+.photobooth-slot--empty::after {
+  content: "🤍";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  opacity: 0.5;
+}
+.photobooth-slot img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   cursor: pointer;
-  transition: transform 0.4s var(--ease);
+  transition: transform 0.3s var(--ease);
 }
-.gallery-card:active img {
-  transform: scale(0.97);
-}
-.gallery-hint {
+.photobooth-slot img:active { transform: scale(0.96); }
+
+.photobooth-page-hint {
   text-align: center;
+  margin-top: 10px;
   font-size: 0.78rem;
   color: var(--ink-faint);
   letter-spacing: 1px;
+}
+
+/* =========================================================
+   프레임 1 / 2 / 4. minimal · doodle-green · pink-sticker
+   - 보내주신 레퍼런스 이미지를 배경 투명화한 실제 PNG를 그대로 사용합니다.
+   - 사진 4장이 PNG 뒤에 깔리고, PNG의 투명해진 "창" 자리로 사진이 비쳐 보입니다.
+   ========================================================= */
+.photobooth-card--overlay {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+.photobooth-card--overlay .overlay-slot {
+  position: absolute;
+  aspect-ratio: auto;
+  border-radius: 2px;
+}
+.photobooth-card--overlay .overlay-frame-png {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+/* doodle-green 하트 창은 살짝 둥글게 */
+.photobooth-card--doodle-green .overlay-slot { border-radius: 6px; }
+/* pastel-cute 모자이크 창도 살짝 둥글게 */
+.photobooth-card--pastel-cute .overlay-slot { border-radius: 8px; }
+
+/* =========================================================
+   전체보기 버튼 + 패널 - 지금까지 올라온 사진을 전부 나열해서 보여줌
+   ========================================================= */
+.view-all-btn {
+  display: block;
+  margin: 18px auto 0;
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 7px 20px;
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+.view-all-btn:active { opacity: 0.6; }
+
+.view-all-panel {
+  position: fixed;
+  inset: 0;
+  background: rgba(30, 28, 24, 0.55);
+  z-index: 190;
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.view-all-panel.is-open { display: flex; }
+.view-all-panel__sheet {
+  width: 100%;
+  max-width: var(--max-w);
+  max-height: 80vh;
+  background: #ffffff;
+  border-radius: 20px 20px 0 0;
+  padding: 18px 18px 26px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.view-all-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.view-all-panel__title {
+  font-size: 0.95rem;
+  color: var(--ink);
+  font-weight: 700;
+  margin: 0;
+}
+.view-all-panel__close {
+  background: transparent;
+  border: none;
+  font-size: 1.1rem;
+  color: var(--ink-faint);
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.view-all-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.view-all-panel__grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.view-all-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--ink-faint);
+  font-size: 0.85rem;
+  padding: 30px 0;
 }
 
 .lightbox {
